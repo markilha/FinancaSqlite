@@ -29,11 +29,6 @@ export default function Entrada() {
     function handleChangeCategoria(item) {
 
         setCategoria(item);
-
-        // db.findOne({ category: item }, function (err, doc) {
-        //   if (err) return console.log(err);
-        //   setTypeField(doc.type);
-        // });
     }
 
     function limpaCampos(){
