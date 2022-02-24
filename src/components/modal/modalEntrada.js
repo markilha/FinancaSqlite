@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Grid, Button, ButtonGroup } from "@material-ui/core";
+import { Grid} from "@material-ui/core";
 import Controls from "../controls/Controls";
 import { useForm } from "../useForm";
 
@@ -45,6 +45,7 @@ export default function ModelEntrada(props) {
       });
   }, [recordForEdit]);
 
+
  
 
   return (
@@ -62,6 +63,29 @@ export default function ModelEntrada(props) {
           name="tipo"
           label="tipo"
           value={values.tipo}
+          onChange={handleInputChange}         
+        /> 
+         <Controls.Input 
+          grid={4}
+          name="valor"
+          label="Valor"
+          value={values.valor}
+          onChange={handleInputChange}         
+        /> 
+      </Grid>
+      <Grid container spacing={3}>
+        <Controls.Input
+          grid={6}
+          name="categoria"
+          label="Categoria"
+          value={values.categoria}
+          onChange={handleInputChange}         
+        /> 
+          <Controls.Input 
+          grid={6}
+          name="descricao"
+          label="Descrição"
+          value={values.descricao}
           onChange={handleInputChange}         
         /> 
       </Grid>

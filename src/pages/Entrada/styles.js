@@ -10,7 +10,7 @@ export const Section = styled.section`
   .grid {
     margin-top: 0.5rem;
     z-index: 2;
-    width: 80%;
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -20,7 +20,8 @@ export const Section = styled.section`
 
 export const Header = styled.div`
     background-color: darkblue;
-    height: 150px;
+    height: 100px;
+    width:100%;
     text-align: center;
 `;
 

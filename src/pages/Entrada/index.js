@@ -1,37 +1,66 @@
-import React, { useEffect, useState,useContext } from "react"
+import React, { useEffect, useState, useContext } from "react"
 import * as C from './styles'
 import api from '../../services/api';
-import {Tabela} from '../../components/tabela'
-import {AuthContext} from '../../contexts/auth';
+import { Tabela } from '../../components/tabela'
+import { AuthContext } from '../../contexts/auth';
+import { InfoArea } from "../../components/infoArea";
+import {
+    getCurrentMonth,
+    filtroPorMes
+} from "../../util/data.ts";
 
 
 export default function Entrada() {
-    const {atual,setAtual} = useContext(AuthContext);
+    const { atual, setAtual } = useContext(AuthContext);
     const [data, setData] = useState("")
     const [categoria, setCategoria] = useState("")
     const [tipo, setTipo] = useState("")
     const [descricao, setDescricao] = useState("")
     const [valor, setValor] = useState(0)
     const [dados, setDados] = useState([])
-    const [filtro, setFiltro] = useState([]) 
+    const [filtro, setFiltro] = useState([])
+    const [mesAtual, setMesAtual] = useState(getCurrentMonth());
+    const [renda, setRenda] = useState(0);
+    const [despesa, setDespesa] = useState(0);
 
-    useEffect(()=>{
-        async function loadData(){
+    useEffect(() => {
+        async function loadData() {
             const response = await api.get('/entrada');
-            if(response.status === 200){
+            if (response.status === 200) {
                 setDados(response.data);
                 setFiltro(response.data);
             }
         }
         loadData();
-    },[atual])
+    }, [atual])
+
+    useEffect(() => {
+        let rendaCont = 0;
+        let despesaCont = 0;
+
+        for (let i in filtro) {
+            if (filtro[i].tipo === "Despesa") {
+                despesaCont += filtro[i].valor;
+            } else {
+                rendaCont += filtro[i].valor;
+            }
+        }
+        setRenda(rendaCont);
+        setDespesa(despesaCont);
+    }, [filtro]);
+
+    useEffect(() => {
+        setFiltro(filtroPorMes(dados, mesAtual));
+      }, [dados, mesAtual, atual]);
 
     function handleChangeCategoria(item) {
-
         setCategoria(item);
     }
+    const handleMonthChange = (newMonth) => {
+        setMesAtual(newMonth);
+    };
 
-    function limpaCampos(){
+    function limpaCampos() {
         setData('');
         setCategoria('');
         setDescricao('');
@@ -39,41 +68,50 @@ export default function Entrada() {
         setValor(0);
     }
 
-   async function handleAddEvent() {
+    async function handleAddEvent() {
         let errors = [];
         if (isNaN(new Date(data).getTime())) {
-          errors.push("Data inválida!");
+            errors.push("Data inválida!");
         }
         if (descricao === "") {
-          errors.push("Descrição esta vazia!");
+            errors.push("Descrição esta vazia!");
         }
         if (parseFloat(valor) <= 0) {
-          errors.push("Valor inválido!");
+            errors.push("Valor inválido!");
         }
         if (errors.length > 0) {
-          alert(errors.join("\n"));
+            alert(errors.join("\n"));
         } else {
 
-          var dados = {
-            data: data,
-            categoria: categoria,
-            descricao: descricao,
-            tipo: tipo,
-            valor: parseFloat(valor.replace(",", ".")),
-          };
+            var dados = {
+                data: data,
+                categoria: categoria,
+                descricao: descricao,
+                tipo: tipo,
+                valor: parseFloat(valor.replace(",", ".")),
+            };
 
-          const response = await api.post('/entrada',dados);
-          setAtual(!atual);
-          limpaCampos();     
-        }    
-      };
- 
+            const response = await api.post('/entrada', dados);
+            setAtual(!atual);
+            limpaCampos();
+        }
+    };
+
     return (
         <C.Section>
             <div className="grid">
+                <C.Header>
+                    <C.HeaderText>Sistema Financeiro</C.HeaderText>
+                </C.Header>
                 <C.Body>
-                    <C.ContainerArea>
+                    <InfoArea
+                        currentMonth={mesAtual}
+                        onMonthChange={handleMonthChange}
+                        income={renda}
+                        expense={despesa}
+                    />
 
+                    <C.ContainerArea>
                         <C.InputLabel>
                             <C.InputTitle>Data</C.InputTitle>
                             <C.Input

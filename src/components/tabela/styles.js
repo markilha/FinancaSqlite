@@ -46,7 +46,7 @@ export const Category = styled.div`
     display: inline-block;
     padding: 5px 10px;
     border-radius: 5px;
-    color: #FFF;
+    color: ${props => props.color}
     background-color: #FFF;
 `;
 

@@ -8,6 +8,7 @@ import ConfirmDialog from "../../components/ConfirmDialog";
 import ModelEntrada from "../../components/modal/modalEntrada"
 
 
+
 import { AuthContext } from "../../contexts/auth";
 
 export const Tabela = ({ lista }) => {
@@ -44,8 +45,8 @@ export const Tabela = ({ lista }) => {
     setAtual(!atual);
   };
 
+
   const addOrEdit = (item, resetForm) => {
-      console.log(item)
     if (item.id === 0) {
     } else {
       async function updateLote() {
@@ -86,7 +87,7 @@ export const Tabela = ({ lista }) => {
     setOpenPopup(false);
   };
 
-  const openInPopup = (item) => {     
+  const openInPopup = (item) => {
     setRecordForEdit(item);
     setOpenPopup(true);
   };
@@ -96,16 +97,18 @@ export const Tabela = ({ lista }) => {
       <C.Table>
         <thead>
           <tr>
-            <C.TableHeadColumn align="center" width={100}>
+            <C.TableHeadColumn align="left" width={100}>
               Data
             </C.TableHeadColumn>
-            <C.TableHeadColumn align="center" width={130}>
+            <C.TableHeadColumn align="left" width={130}>
               Categoria
             </C.TableHeadColumn>
-            <C.TableHeadColumn align="center" width={130}>
+            <C.TableHeadColumn align="left" width={130}>
               Tipo
             </C.TableHeadColumn>
-            <C.TableHeadColumn align="center">Título</C.TableHeadColumn>
+            <C.TableHeadColumn align="left">
+              Descrição
+            </C.TableHeadColumn>
             <C.TableHeadColumn align="left" width={100}>
               Valor
             </C.TableHeadColumn>
@@ -119,10 +122,9 @@ export const Tabela = ({ lista }) => {
             <C.TableLine key={index}>
               <C.TableColumn> {item.data}</C.TableColumn>
               <C.TableColumn>
-                {item.categoria}
-                {/* <C.Category color={item.tipo == "Despesa" ? 'red' : 'blue'}>
-                                {item.categoria}
-                            </C.Category> */}
+                <C.Category color={item.tipo == "Despesa" ? '#CCC' : 'secundary'}>
+                  {item.categoria}
+                </C.Category>
               </C.TableColumn>
               <C.TableColumn> {item.tipo}</C.TableColumn>
               <C.TableColumn> {item.descricao}</C.TableColumn>
@@ -135,17 +137,18 @@ export const Tabela = ({ lista }) => {
                     minimumIntegerDigits: 2,
                   })}
               </C.TableColumn>
-                  {/* BOTÃO ATUALIZAR */}
+              {/* BOTÃO ATUALIZAR */}
               <C.Action>
                 <button
-                  onClick={() => {openInPopup(item);
+                  onClick={() => {
+                    openInPopup(item);
                   }}
                 >
                   {" "}
                   <FiEdit2 size={20} />
                 </button>
               </C.Action>
-               {/* BOTÃO DELETAR*/}
+              {/* BOTÃO DELETAR*/}
               <C.Action>
                 <button
                   onClick={() => {
@@ -166,9 +169,9 @@ export const Tabela = ({ lista }) => {
             </C.TableLine>
           ))}
         </tbody>
-      </C.Table>   
+      </C.Table>
       <Popup
-        title="Formulario lote"
+        title="Edição da Entrada"
         openPopup={openPopup}
         setOpenPopup={setOpenPopup}
       >
@@ -179,7 +182,7 @@ export const Tabela = ({ lista }) => {
       <ConfirmDialog
         confirmDialog={confirmDialog}
         setConfirmDialog={setConfirmDialog}
-      />  
+      />
     </>
   );
 };
