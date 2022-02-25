@@ -132,10 +132,7 @@ export const Tabela = ({ lista }) => {
                 style={{ color: item.tipo === "Despesa" ? "red" : "blue" }}
               >
                 {" "}
-                {"R$ " +
-                  item.valor.toLocaleString("pt-br", {
-                    minimumIntegerDigits: 2,
-                  })}
+                {"R$ " + item.valor.toLocaleString("pt-br", {minimumIntegerDigits: 2,})}
               </C.TableColumn>
               {/* BOTÃO ATUALIZAR */}
               <C.Action>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Grid} from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import Controls from "../controls/Controls";
 import { useForm } from "../useForm";
 
@@ -45,9 +45,6 @@ export default function ModelEntrada(props) {
       });
   }, [recordForEdit]);
 
-
- 
-
   return (
     <Grid container spacing={3}>
       <Grid container spacing={3}>
@@ -56,16 +53,22 @@ export default function ModelEntrada(props) {
           name="data"
           label="data"
           value={values.data}
-          onChange={handleInputChange}         
-        /> 
-          <Controls.Input 
+          onChange={handleInputChange}
+        />
+        <Controls.Input
           grid={4}
           name="tipo"
           label="tipo"
           value={values.tipo}
-          onChange={handleInputChange}         
-        /> 
-         <Controls.Input 
+          onChange={handleInputChange}
+        />
+        {/* <Controls.InputMask
+          grid={4}
+          label = "Valor"
+          value={values.valor.toLocaleString("pt-br", {minimumIntegerDigits: 2})}
+          onChange={handleInputChange}
+        /> */}
+        <Controls.Input 
           grid={4}
           name="valor"
           label="Valor"
@@ -79,18 +82,18 @@ export default function ModelEntrada(props) {
           name="categoria"
           label="Categoria"
           value={values.categoria}
-          onChange={handleInputChange}         
-        /> 
-          <Controls.Input 
+          onChange={handleInputChange}
+        />
+        <Controls.Input
           grid={6}
           name="descricao"
           label="Descrição"
           value={values.descricao}
-          onChange={handleInputChange}         
-        /> 
+          onChange={handleInputChange}
+        />
       </Grid>
 
-      <Grid item xs={12} >   
+      <Grid item xs={12}>
         <div>
           <Controls.Button type="submit" text="Salvar" onClick={handleSubmit} />
           <Controls.Button text="Limpar" color="default" onClick={resetForm} />

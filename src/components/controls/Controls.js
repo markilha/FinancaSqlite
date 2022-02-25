@@ -5,6 +5,7 @@ import Checkbox from "./Checkbox";
 import DatePicker from "./DatePicker";
 import Button from "./Button";
 import ActionButton from "./ActionButton";
+import InputMask from "./mask";
 
 const Controls = {
     Input,
@@ -13,7 +14,8 @@ const Controls = {
     Checkbox,
     DatePicker,
     Button,
-    ActionButton
+    ActionButton,
+    InputMask
 }
 
 export default Controls;
