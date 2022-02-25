@@ -4,22 +4,29 @@ import api from "../../services/api";
 import { Tabela } from "../../components/tabela";
 import { AuthContext } from "../../contexts/auth";
 import { InfoArea } from "../../components/infoArea";
+import Popup from "../../components/Popup";
 import { getCurrentMonth, filtroPorMes } from "../../util/data.ts";
+import Notification from "../../components/Notification";
+import ModalAdd from "../../components/modal/modalAdd";
+import ModalCategoria from "../../components/modal/modalCategoria";
 
 export default function Entrada() {
-  const { atual, setAtual } = useContext(AuthContext);
-  const [data, setData] = useState("");
-  const [categoria, setCategoria] = useState("");
-  const [categorias, setCategorias] = useState([]);
-  const [tipo, setTipo] = useState("");
-  const [descricao, setDescricao] = useState("");
-  const [valor, setValor] = useState(0);
+  const { atual, setAtual } = useContext(AuthContext); 
+  
   const [dados, setDados] = useState([]);
   const [filtro, setFiltro] = useState([]);
   const [mesAtual, setMesAtual] = useState(getCurrentMonth());
   const [renda, setRenda] = useState(0);
   const [despesa, setDespesa] = useState(0);
+  const [openPopup, setOpenPopup] = useState(true);  
+  const [onOpenCat, setOpenCat] = useState(true);  
 
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: "",
+    type: "",
+  }); 
+ 
   useEffect(() => {
     async function loadData() {
       const response = await api.get("/entrada");
@@ -28,14 +35,7 @@ export default function Entrada() {
         setFiltro(response.data);
       }
     }
-    loadData();
-    async function loadCategorias() {
-      const response = await api.get("/categoria");
-      if (response.status === 200) {
-        setCategorias(response.data);
-      }
-    }
-    loadCategorias();
+    loadData();  
   }, [atual]);
 
   useEffect(() => {
@@ -57,46 +57,81 @@ export default function Entrada() {
     setFiltro(filtroPorMes(dados, mesAtual));
   }, [dados, mesAtual, atual]);
 
-  function handleChangeCategoria(item) {
-    setCategoria(item);
-  }
+
   const handleMonthChange = (newMonth) => {
     setMesAtual(newMonth);
   };
+  const onOpenEnt = () => {
+    setOpenPopup(!openPopup);
+  };
 
-  function limpaCampos() {
-    setData("");
-    setCategoria("");
-    setDescricao("");
-    setTipo("");
-    setValor(0);
-  }
+  const onOpenPoupCat = () => {
+    setOpenCat(!onOpenCat);
+  };
 
-  async function handleAddEvent() {
+
+  //ENSERIR E EDITAR
+  async function handleAddEvent(valores) {    
     let errors = [];
-    if (isNaN(new Date(data).getTime())) {
+    if (isNaN(new Date(valores.data).getTime())) {
       errors.push("Data inválida!");
     }
-    if (descricao === "") {
+    if (valores.descricao === "") {
       errors.push("Descrição esta vazia!");
     }
-    if (parseFloat(valor) <= 0) {
+    if (parseFloat(valores.valor) <= 0) {
       errors.push("Valor inválido!");
     }
     if (errors.length > 0) {
       alert(errors.join("\n"));
     } else {
-      var dados = {
-        data: data,
-        categoria: categoria,
-        descricao: descricao,
-        tipo: tipo,
-        valor: parseFloat(valor.toString().replace(",", ".")),
-      };
 
-      const response = await api.post("/entrada", dados);
+      if(valores.repetir > 0){
+        let [ano, mes, dia] = valores.data.toString().split("-");
+
+        for(var i=0;i< valores.repetir;i++){  
+          
+          var m = parseInt(mes) + i;
+          let newMes = "";
+
+          if(m > 12){           
+            newMes = m - 12;  
+            ano = parseInt(ano) + 1;          
+          }else{
+            newMes = m;
+          }
+          newMes = ("00" + newMes).slice(-2); 
+
+          var dados = {
+            data: `${ano}-${newMes}-${dia}`,
+            categoria: valores.categoria,
+            descricao: valores.descricao,
+            tipo: valores.tipo,
+            valor: parseFloat(valores.valor.toString().replace(",", ".")),
+          };    
+          const response = await api.post("/entrada", dados);
+        }
+        
+      }else{
+
+        var dados = {
+          data: valores.data,
+          categoria: valores.categoria,
+          descricao: valores.descricao,
+          tipo: valores.tipo,
+          valor: parseFloat(valores.valor.toString().replace(",", ".")),
+        };     
+        const response = await api.post("/entrada", dados);
+      }
+     
+
+      setNotify({
+        isOpen: true,
+        message: "Inserido com sucesso",
+        type: "success",
+      });
       setAtual(!atual);
-      limpaCampos();
+      setOpenPopup(!openPopup);
     }
   }
 
@@ -112,72 +147,28 @@ export default function Entrada() {
             onMonthChange={handleMonthChange}
             income={renda}
             expense={despesa}
+            onOpenEnt={onOpenEnt}
           />
+          {/* Inicio do Popup */}
+          <Popup
+            title="Nova Entrada"
+            openPopup={openPopup}
+            setOpenPopup={setOpenPopup}
+          >
+           <ModalAdd handleAddEvent={handleAddEvent} />
+          </Popup>
 
-          <C.ContainerArea>
-            <C.InputLabel>
-              <C.InputTitle>Data</C.InputTitle>
-              <C.Input
-                type={"date"}
-                value={data}
-                onChange={(e) => setData(e.target.value)}
-              />
-            </C.InputLabel>
+          {/* Inicio do Popup CATEGORIA */}
+          <Popup
+            title="Nova Categoria"
+            openPopup={onOpenCat}
+            setOpenPopup={setOpenCat}
+          >
+           <ModalCategoria onOpenCat onOpenPoupCat={onOpenPoupCat} />
+          </Popup>
 
-            <C.InputLabel>
-              <C.InputTitle>Categoria</C.InputTitle>
-              <C.Select
-                value={categoria}
-                onChange={(e) => handleChangeCategoria(e.target.value)}
-              >
-                {categorias.map((item, index) => (
-                  <>
-                    <option key={index} value={item.nome}>
-                      {item.nome}
-                    </option>
-                  </>
-                ))}
-              </C.Select>
-            </C.InputLabel>
+          <Notification notify={notify} setNotify={setNotify} />
 
-            <C.InputLabel>
-              <C.InputTitle>Tipo</C.InputTitle>
-              <C.Select value={tipo} onChange={(e) => setTipo(e.target.value)}>
-                <>
-                  <option></option>
-                  <option key={"despesa"} value={"Despesa"}>
-                    Despesa
-                  </option>
-                  <option key={"receita"} value={"Receita"}>
-                    Receita
-                  </option>
-                </>
-              </C.Select>
-            </C.InputLabel>
-
-            <C.InputLabel>
-              <C.InputTitle>Descrição</C.InputTitle>
-              <C.Input
-                type="text"
-                value={descricao}
-                onChange={(e) => setDescricao(e.target.value)}
-              />
-            </C.InputLabel>
-
-            <C.InputLabel>
-              <C.InputTitle>Valor</C.InputTitle>
-              <C.Input
-                type="text"
-                value={valor}
-                onChange={(e) => setValor(e.target.value)}
-              />
-            </C.InputLabel>
-
-            <C.InputLabel>
-              <C.InputTitle>&nbsp;</C.InputTitle>
-              <C.Button onClick={handleAddEvent}>Adicionar</C.Button>
-            </C.InputLabel>
-          </C.ContainerArea>
 
           <Tabela lista={filtro} />
         </C.Body>

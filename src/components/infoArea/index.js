@@ -2,15 +2,18 @@ import * as C from './styles';
 import { formatCurrentMonth } from '../../util/data.ts';
 import { ResumoItem } from '../resumoItem';
 import {useState,useEffect} from 'react';
+import { FaCashRegister } from "react-icons/fa";
+import CategoryIcon from '@material-ui/icons/Category';
 
 
-export const InfoArea = ({ currentMonth, onMonthChange, income, expense }) => {
+
+export const InfoArea = ({ currentMonth, onMonthChange, income, expense,onOpenEnt,onOpenCat}) => {
     const[ShowConta,setShowConta] = useState(false)
     const[Saldo, setSaldo]= useState('1000');
    
-    let strExpense = expense.toLocaleString('pt-br', { minimumFractionDigits: 2 });
-    let strIncome = income.toLocaleString('pt-br', { minimumIntegerDigits: 2 });
-    let result = (income - expense).toLocaleString('pt-br', { minimumIntegerDigits: 2 });
+    let strExpense = expense.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+    let strIncome = income.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+    let result = (income - expense).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
   
     
     useEffect(() => {
@@ -54,7 +57,7 @@ export const InfoArea = ({ currentMonth, onMonthChange, income, expense }) => {
             </C.MonthArea>
             <C.ResumeArea>
                 <ResumoItem title="Receitas" value={strIncome} />
-                <ResumoItem title="Despesas" value={strExpense} />
+                <ResumoItem title="Despesas" value={strExpense} color={'red'} />
                 <ResumoItem
                     title="Balanço"
                     value={result}
@@ -62,14 +65,18 @@ export const InfoArea = ({ currentMonth, onMonthChange, income, expense }) => {
                 />
                  </C.ResumeArea>
 
-                {/* <ResumeItem title="Saldo" value={Saldo} /> */}
-                {/* <C.Action>
-                    <button onClick={toggleConta}>
-                        {"Conta "}
-                        <FiShoppingBag />
+                 <C.Action>
+                    <button onClick={onOpenCat}>                    
+                        <CategoryIcon                        
+                         size={40} />
+                    </button>
+                </C.Action>  
+                 <C.Action>
+                    <button onClick={onOpenEnt}>                    
+                        <FaCashRegister size={40} />
                     </button>
                 </C.Action>           
-          {ShowConta && <ModalConta close={closeConta} />} */}
+         
         </C.Container>
     );
 }

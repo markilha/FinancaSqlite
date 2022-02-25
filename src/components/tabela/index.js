@@ -5,7 +5,8 @@ import api from "../../services/api";
 import Popup from "../../components/Popup";
 import Notification from "../../components/Notification";
 import ConfirmDialog from "../../components/ConfirmDialog";
-import ModelEntrada from "../../components/modal/modalEntrada"
+import ModelEntrada from "../../components/modal/modalEntrada";
+import {formatDate} from "../../util/data.ts"
 
 
 
@@ -45,42 +46,50 @@ export const Tabela = ({ lista }) => {
     setAtual(!atual);
   };
 
+  const resultado = (response, mensagem) => {
+    if (response.status === 200) {
+      setNotify({
+        isOpen: true,
+        message: mensagem,
+        type: "success",
+      });
+    } else {
+      setNotify({
+        isOpen: true,
+        message: "Ops! Ocorreu um erro ao tentar atualizar",
+        type: "error",
+      });
+    }
+  }
+
 
   const addOrEdit = (item, resetForm) => {
+
+    const dados = {
+      data: item.data,
+      categoria: item.categoria,
+      descricao: item.descricao,
+      tipo: item.tipo,
+      valor: parseFloat(item.valor.replace(",", ".")),
+    };
     if (item.id === 0) {
+      async function insertEntrada() {
+        const response = await api.post('/entrada', dados);
+        resultado(response, "Entrada inserida com sucesso!!!")
+      }
+      insertEntrada();
     } else {
-      async function updateLote() {
+      async function updateEntrada() {
         try {
-          var dados = {
-            data: item.data,
-            categoria: item.categoria,
-            descricao: item.descricao,
-            tipo: item.tipo,
-            valor: parseFloat(item.valor.replace(",", ".")),
-          };
 
           const response = await api.put(`/entrada/${item.id}`, dados);
-
-          if (response.status === 200) {
-            setNotify({
-              isOpen: true,
-              message: "Registro atualizado com sucesso!!!",
-              type: "success",
-            });
-          } else {
-            setNotify({
-              isOpen: true,
-              message: "Ops! Ocorreu um erro ao tentar atualizar",
-              type: "error",
-            });
-          }
-
+          resultado(response, "Entrada Atualizada com sucesso!!")
           setAtual(!atual);
         } catch (err) {
           console.log(err);
         }
       }
-      updateLote();
+      updateEntrada();
     }
     resetForm();
     setRecordForEdit(null);
@@ -92,50 +101,53 @@ export const Tabela = ({ lista }) => {
     setOpenPopup(true);
   };
 
-  return (
-    <>
-      <C.Table>
-        <thead>
-          <tr>
-            <C.TableHeadColumn align="left" width={100}>
-              Data
-            </C.TableHeadColumn>
-            <C.TableHeadColumn align="left" width={130}>
-              Categoria
-            </C.TableHeadColumn>
-            <C.TableHeadColumn align="left" width={130}>
-              Tipo
-            </C.TableHeadColumn>
-            <C.TableHeadColumn align="left">
-              Descrição
-            </C.TableHeadColumn>
-            <C.TableHeadColumn align="left" width={100}>
-              Valor
-            </C.TableHeadColumn>
-            <C.TableHeadColumn align="left" width={100}>
-              Ação
-            </C.TableHeadColumn>
-          </tr>
-        </thead>
-        <tbody>
-          {lista.map((item, index) => (
-            <C.TableLine key={index}>
-              <C.TableColumn> {item.data}</C.TableColumn>
-              <C.TableColumn>
-                <C.Category color={item.tipo == "Despesa" ? '#CCC' : 'secundary'}>
-                  {item.categoria}
-                </C.Category>
-              </C.TableColumn>
-              <C.TableColumn> {item.tipo}</C.TableColumn>
-              <C.TableColumn> {item.descricao}</C.TableColumn>
-              <C.TableColumn
-                style={{ color: item.tipo === "Despesa" ? "red" : "blue" }}
-              >
-                {" "}
-                {"R$ " + item.valor.toLocaleString("pt-br", {minimumIntegerDigits: 2,})}
-              </C.TableColumn>
-              {/* BOTÃO ATUALIZAR */}
-              <C.Action>
+
+
+  return (<>
+
+    <C.Table>
+      <thead>
+        <tr>
+          <C.TableHeadColumn align="left" width={100}>
+            Data
+          </C.TableHeadColumn>
+          <C.TableHeadColumn align="left" width={150}>
+            Categoria
+          </C.TableHeadColumn>
+          <C.TableHeadColumn align="left" width={130}>
+            Tipo
+          </C.TableHeadColumn>
+          <C.TableHeadColumn align="left" width={300}>
+            Descrição
+          </C.TableHeadColumn>
+          <C.TableHeadColumn align="center" width={100}>
+            Valor
+          </C.TableHeadColumn>
+          <C.TableHeadColumn align="center" width={150}>
+            
+          </C.TableHeadColumn>
+        </tr>
+      </thead>
+      <tbody>
+        {lista.map((item, index) => (
+          <C.TableLine key={index}>
+            <C.TableColumn> {formatDate(item.data)}</C.TableColumn>
+            <C.TableColumn>
+              <C.Category >
+                {item.categoria}
+              </C.Category>
+            </C.TableColumn>
+            <C.TableColumn style={{ color: item.tipo === "Despesa" ? "red" : "blue" }}> {item.tipo}</C.TableColumn>
+            <C.TableColumn> {item.descricao}</C.TableColumn>
+            <C.TableColumn align="right"
+              style={{ color: item.tipo === "Despesa" ? "red" : "blue" }}
+            >             
+              {item.valor.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}
+            </C.TableColumn>
+
+            {/* BOTÃO ATUALIZAR */}
+            <C.TableColumn align="right">
+              <C.Action >
                 <button
                   onClick={() => {
                     openInPopup(item);
@@ -146,7 +158,7 @@ export const Tabela = ({ lista }) => {
                 </button>
               </C.Action>
               {/* BOTÃO DELETAR*/}
-              <C.Action>
+              <C.Action  >
                 <button
                   onClick={() => {
                     setConfirmDialog({
@@ -163,23 +175,24 @@ export const Tabela = ({ lista }) => {
                   <FiDelete size={20} />
                 </button>
               </C.Action>
-            </C.TableLine>
-          ))}
-        </tbody>
-      </C.Table>
-      <Popup
-        title="Edição da Entrada"
-        openPopup={openPopup}
-        setOpenPopup={setOpenPopup}
-      >
-        <ModelEntrada recordForEdit={recordForEdit} addOrEdit={addOrEdit} />
-      </Popup>
+            </C.TableColumn>
+          </C.TableLine>
+        ))}
+      </tbody>
+    </C.Table>
+    <Popup
+      title="Edição da Entrada"
+      openPopup={openPopup}
+      setOpenPopup={setOpenPopup}
+    >
+      <ModelEntrada recordForEdit={recordForEdit} addOrEdit={addOrEdit} />
+    </Popup>
 
-      <Notification notify={notify} setNotify={setNotify} />
-      <ConfirmDialog
-        confirmDialog={confirmDialog}
-        setConfirmDialog={setConfirmDialog}
-      />
-    </>
+    <Notification notify={notify} setNotify={setNotify} />
+    <ConfirmDialog
+      confirmDialog={confirmDialog}
+      setConfirmDialog={setConfirmDialog}
+    />
+  </>
   );
 };

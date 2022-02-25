@@ -40,6 +40,7 @@ export const TableLine = styled.tr``;
 
 export const TableColumn = styled.td`
     padding: 10px 0;
+    text-align: ${props => props.align};
 `;
 
 export const Category = styled.div`
@@ -104,7 +105,7 @@ export const Button = styled.button`
 export const Action = styled.td`
 border: 0;
 padding:5px;
-align-items: center;
+align-items: ${props => props.align};
 display: inline-block;
 border-radius: 4px;
 `;
