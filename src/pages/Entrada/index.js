@@ -1,204 +1,187 @@
-import React, { useEffect, useState, useContext } from "react"
-import * as C from './styles'
-import api from '../../services/api';
-import { Tabela } from '../../components/tabela'
-import { AuthContext } from '../../contexts/auth';
+import React, { useEffect, useState, useContext } from "react";
+import * as C from "./styles";
+import api from "../../services/api";
+import { Tabela } from "../../components/tabela";
+import { AuthContext } from "../../contexts/auth";
 import { InfoArea } from "../../components/infoArea";
-import {
-    getCurrentMonth,
-    filtroPorMes
-} from "../../util/data.ts";
-
+import { getCurrentMonth, filtroPorMes } from "../../util/data.ts";
 
 export default function Entrada() {
-    const { atual, setAtual } = useContext(AuthContext);
-    const [data, setData] = useState("")
-    const [categoria, setCategoria] = useState("")
-    const [tipo, setTipo] = useState("")
-    const [descricao, setDescricao] = useState("")
-    const [valor, setValor] = useState(0)
-    const [dados, setDados] = useState([])
-    const [filtro, setFiltro] = useState([])
-    const [mesAtual, setMesAtual] = useState(getCurrentMonth());
-    const [renda, setRenda] = useState(0);
-    const [despesa, setDespesa] = useState(0);
+  const { atual, setAtual } = useContext(AuthContext);
+  const [data, setData] = useState("");
+  const [categoria, setCategoria] = useState("");
+  const [categorias, setCategorias] = useState([]);
+  const [tipo, setTipo] = useState("");
+  const [descricao, setDescricao] = useState("");
+  const [valor, setValor] = useState(0);
+  const [dados, setDados] = useState([]);
+  const [filtro, setFiltro] = useState([]);
+  const [mesAtual, setMesAtual] = useState(getCurrentMonth());
+  const [renda, setRenda] = useState(0);
+  const [despesa, setDespesa] = useState(0);
 
-    useEffect(() => {
-        async function loadData() {
-            const response = await api.get('/entrada');
-            if (response.status === 200) {
-                setDados(response.data);
-                setFiltro(response.data);
-            }
-        }
-        loadData();
-    }, [atual])
-
-    useEffect(() => {
-        let rendaCont = 0;
-        let despesaCont = 0;
-
-        for (let i in filtro) {
-            if (filtro[i].tipo === "Despesa") {
-                despesaCont += filtro[i].valor;
-            } else {
-                rendaCont += filtro[i].valor;
-            }
-        }
-        setRenda(rendaCont);
-        setDespesa(despesaCont);
-    }, [filtro]);
-
-    useEffect(() => {
-        setFiltro(filtroPorMes(dados, mesAtual));
-      }, [dados, mesAtual, atual]);
-
-    function handleChangeCategoria(item) {
-        setCategoria(item);
+  useEffect(() => {
+    async function loadData() {
+      const response = await api.get("/entrada");
+      if (response.status === 200) {
+        setDados(response.data);
+        setFiltro(response.data);
+      }
     }
-    const handleMonthChange = (newMonth) => {
-        setMesAtual(newMonth);
-    };
-
-    function limpaCampos() {
-        setData('');
-        setCategoria('');
-        setDescricao('');
-        setTipo('');
-        setValor(0);
+    loadData();
+    async function loadCategorias() {
+      const response = await api.get("/categoria");
+      if (response.status === 200) {
+        setCategorias(response.data);
+      }
     }
+    loadCategorias();
+  }, [atual]);
 
-    async function handleAddEvent() {
-        let errors = [];
-        if (isNaN(new Date(data).getTime())) {
-            errors.push("Data inválida!");
-        }
-        if (descricao === "") {
-            errors.push("Descrição esta vazia!");
-        }
-        if (parseFloat(valor) <= 0) {
-            errors.push("Valor inválido!");
-        }
-        if (errors.length > 0) {
-            alert(errors.join("\n"));
-        } else {
+  useEffect(() => {
+    let rendaCont = 0;
+    let despesaCont = 0;
 
-            var dados = {
-                data: data,
-                categoria: categoria,
-                descricao: descricao,
-                tipo: tipo,
-                valor: parseFloat(valor.replace(",", ".")),
-            };
+    for (let i in filtro) {
+      if (filtro[i].tipo === "Despesa") {
+        despesaCont += filtro[i].valor;
+      } else {
+        rendaCont += filtro[i].valor;
+      }
+    }
+    setRenda(rendaCont);
+    setDespesa(despesaCont);
+  }, [filtro]);
 
-            const response = await api.post('/entrada', dados);
-            setAtual(!atual);
-            limpaCampos();
-        }
-    };
+  useEffect(() => {
+    setFiltro(filtroPorMes(dados, mesAtual));
+  }, [dados, mesAtual, atual]);
 
-    return (
-        <C.Section>
-            <div className="grid">
-                <C.Header>
-                    <C.HeaderText>Sistema Financeiro</C.HeaderText>
-                </C.Header>
-                <C.Body>
-                    <InfoArea
-                        currentMonth={mesAtual}
-                        onMonthChange={handleMonthChange}
-                        income={renda}
-                        expense={despesa}
-                    />
+  function handleChangeCategoria(item) {
+    setCategoria(item);
+  }
+  const handleMonthChange = (newMonth) => {
+    setMesAtual(newMonth);
+  };
 
-                    <C.ContainerArea>
-                        <C.InputLabel>
-                            <C.InputTitle>Data</C.InputTitle>
-                            <C.Input
-                                type={"date"}
-                                value={data}
-                                onChange={(e) => setData(e.target.value)}
-                            />
+  function limpaCampos() {
+    setData("");
+    setCategoria("");
+    setDescricao("");
+    setTipo("");
+    setValor(0);
+  }
 
-                        </C.InputLabel>
+  async function handleAddEvent() {
+    let errors = [];
+    if (isNaN(new Date(data).getTime())) {
+      errors.push("Data inválida!");
+    }
+    if (descricao === "") {
+      errors.push("Descrição esta vazia!");
+    }
+    if (parseFloat(valor) <= 0) {
+      errors.push("Valor inválido!");
+    }
+    if (errors.length > 0) {
+      alert(errors.join("\n"));
+    } else {
+      var dados = {
+        data: data,
+        categoria: categoria,
+        descricao: descricao,
+        tipo: tipo,
+        valor: parseFloat(valor.toString().replace(",", ".")),
+      };
 
-                        <C.InputLabel>
-                            <C.InputTitle>Categoria</C.InputTitle>
-                            <C.Select
-                                value={categoria}
-                                onChange={(e) => handleChangeCategoria(e.target.value)}
-                            >
-                                <option></option>
-                                <option key={"Alimentação"} value={"Alimentação"}>
-                                    Alimentação
-                                </option>
-                                <option key={"Saúde"} value={"Saúde"}>
-                                    Saúde
-                                </option>
-                                <option key={"Educação"} value={"Educação"}>
-                                    Educação
-                                </option>
-                                <option key={"Combustível"} value={"Combustível"}>
-                                    Combustível
-                                </option>
-                                <option key={"Proventos"} value={"Proventos"}>
-                                    Proventos
-                                </option>
-                                {/* {categorias.map((item, index) => (
+      const response = await api.post("/entrada", dados);
+      setAtual(!atual);
+      limpaCampos();
+    }
+  }
+
+  return (
+    <C.Section>
+      <div className="grid">
+        <C.Header>
+          <C.HeaderText>Sistema Financeiro</C.HeaderText>
+        </C.Header>
+        <C.Body>
+          <InfoArea
+            currentMonth={mesAtual}
+            onMonthChange={handleMonthChange}
+            income={renda}
+            expense={despesa}
+          />
+
+          <C.ContainerArea>
+            <C.InputLabel>
+              <C.InputTitle>Data</C.InputTitle>
+              <C.Input
+                type={"date"}
+                value={data}
+                onChange={(e) => setData(e.target.value)}
+              />
+            </C.InputLabel>
+
+            <C.InputLabel>
+              <C.InputTitle>Categoria</C.InputTitle>
+              <C.Select
+                value={categoria}
+                onChange={(e) => handleChangeCategoria(e.target.value)}
+              >
+                {categorias.map((item, index) => (
+                  <>
+                    <option key={index} value={item.nome}>
+                      {item.nome}
+                    </option>
+                  </>
+                ))}
+              </C.Select>
+            </C.InputLabel>
+
+            <C.InputLabel>
+              <C.InputTitle>Tipo</C.InputTitle>
+              <C.Select value={tipo} onChange={(e) => setTipo(e.target.value)}>
                 <>
-                  <option key={index} value={item.categoria}>
-                    {item.categoria}
+                  <option></option>
+                  <option key={"despesa"} value={"Despesa"}>
+                    Despesa
+                  </option>
+                  <option key={"receita"} value={"Receita"}>
+                    Receita
                   </option>
                 </>
-              ))} */}
-                            </C.Select>
-                        </C.InputLabel>
+              </C.Select>
+            </C.InputLabel>
 
-                        <C.InputLabel>
-                            <C.InputTitle>Tipo</C.InputTitle>
-                            <C.Select
-                                value={tipo}
-                                onChange={(e) => setTipo(e.target.value)}
-                            >
-                                <>
-                                    <option></option>
-                                    <option key={"despesa"} value={"Despesa"}>
-                                        Despesa
-                                    </option>
-                                    <option key={"receita"} value={"Receita"}>
-                                        Receita
-                                    </option>
-                                </>
-                            </C.Select>
-                        </C.InputLabel>
+            <C.InputLabel>
+              <C.InputTitle>Descrição</C.InputTitle>
+              <C.Input
+                type="text"
+                value={descricao}
+                onChange={(e) => setDescricao(e.target.value)}
+              />
+            </C.InputLabel>
 
-                        <C.InputLabel>
-                            <C.InputTitle>Descrição</C.InputTitle>
-                            <C.Input
-                                type="text"
-                                value={descricao}
-                                onChange={(e) => setDescricao(e.target.value)}
-                            />
-                        </C.InputLabel>
+            <C.InputLabel>
+              <C.InputTitle>Valor</C.InputTitle>
+              <C.Input
+                type="text"
+                value={valor}
+                onChange={(e) => setValor(e.target.value)}
+              />
+            </C.InputLabel>
 
-                        <C.InputLabel>
-                            <C.InputTitle>Valor</C.InputTitle>
-                            <C.Input
-                                type="text"
-                                value={valor}
-                                onChange={(e) => setValor(e.target.value)}
-                            />
-                        </C.InputLabel>
+            <C.InputLabel>
+              <C.InputTitle>&nbsp;</C.InputTitle>
+              <C.Button onClick={handleAddEvent}>Adicionar</C.Button>
+            </C.InputLabel>
+          </C.ContainerArea>
 
-                        <C.InputLabel>
-                            <C.InputTitle>&nbsp;</C.InputTitle>
-                            <C.Button onClick={handleAddEvent}>Adicionar</C.Button>
-                        </C.InputLabel>
-                    </C.ContainerArea>
-
-                    <Tabela lista={filtro} />
-                </C.Body>
-            </div>
-        </C.Section>
-    )
+          <Tabela lista={filtro} />
+        </C.Body>
+      </div>
+    </C.Section>
+  );
 }

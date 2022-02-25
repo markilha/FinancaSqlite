@@ -12,6 +12,10 @@ const initialFValues = {
   descricao: "",
 };
 
+
+ // var result = item.replace(/D/g,"");//Remove tudo o que não é digito 
+
+
 export default function ModelEntrada(props) {
   const { addOrEdit, recordForEdit } = props;
   const [ativo, setAtivo] = useState(0);
