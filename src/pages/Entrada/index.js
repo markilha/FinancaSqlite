@@ -19,7 +19,7 @@ export default function Entrada() {
   const [renda, setRenda] = useState(0);
   const [despesa, setDespesa] = useState(0);
   const [openPopup, setOpenPopup] = useState(true);  
-  const [onOpenCat, setOpenCat] = useState(true);  
+  const [openPoupCat, setOpenPoupCat] = useState(true);  
 
   const [notify, setNotify] = useState({
     isOpen: false,
@@ -32,10 +32,11 @@ export default function Entrada() {
       const response = await api.get("/entrada");
       if (response.status === 200) {
         setDados(response.data);
-        setFiltro(response.data);
+        setFiltro(response.data);       
       }
     }
     loadData();  
+    
   }, [atual]);
 
   useEffect(() => {
@@ -65,13 +66,14 @@ export default function Entrada() {
     setOpenPopup(!openPopup);
   };
 
-  const onOpenPoupCat = () => {
-    setOpenCat(!onOpenCat);
+  const onOpenCat = () => {
+    setOpenPoupCat(!openPoupCat);
   };
 
 
   //ENSERIR E EDITAR
-  async function handleAddEvent(valores) {    
+  async function handleAddEvent(valores) {  
+  
     let errors = [];
     if (isNaN(new Date(valores.data).getTime())) {
       errors.push("Data inválida!");
@@ -107,21 +109,25 @@ export default function Entrada() {
             categoria: valores.categoria,
             descricao: valores.descricao,
             tipo: valores.tipo,
+            estatus: valores.estatus,
             valor: parseFloat(valores.valor.toString().replace(",", ".")),
-          };    
+          };   
+         
           const response = await api.post("/entrada", dados);
         }
         
       }else{
 
-        var dados = {
+        var dado = {
           data: valores.data,
           categoria: valores.categoria,
           descricao: valores.descricao,
           tipo: valores.tipo,
+          estatus:valores.estatus,
           valor: parseFloat(valores.valor.toString().replace(",", ".")),
         };     
-        const response = await api.post("/entrada", dados);
+    
+        const response = await api.post("/entrada", dado);
       }
      
 
@@ -148,7 +154,9 @@ export default function Entrada() {
             income={renda}
             expense={despesa}
             onOpenEnt={onOpenEnt}
+            onOpenCat = {onOpenCat}
           />
+
           {/* Inicio do Popup */}
           <Popup
             title="Nova Entrada"
@@ -161,15 +169,13 @@ export default function Entrada() {
           {/* Inicio do Popup CATEGORIA */}
           <Popup
             title="Nova Categoria"
-            openPopup={onOpenCat}
-            setOpenPopup={setOpenCat}
+            openPopup={openPoupCat}
+            setOpenPopup={setOpenPoupCat}
           >
-           <ModalCategoria onOpenCat onOpenPoupCat={onOpenPoupCat} />
+           <ModalCategoria onOpenCat onOpenPoupCat={openPoupCat} />
           </Popup>
 
           <Notification notify={notify} setNotify={setNotify} />
-
-
           <Tabela lista={filtro} />
         </C.Body>
       </div>

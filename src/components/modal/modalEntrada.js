@@ -10,6 +10,7 @@ const initialFValues = {
   tipo: "",
   valor: 0,
   descricao: "",
+  estatus:""
 };
 
 
@@ -17,8 +18,7 @@ const initialFValues = {
 
 
 export default function ModelEntrada(props) {
-  const { addOrEdit, recordForEdit } = props;
-  const [ativo, setAtivo] = useState(0);
+  const { addOrEdit, recordForEdit } = props;  
 
   const validate = (fieldValues = values) => {
     let temp = { ...errors };
@@ -65,13 +65,7 @@ export default function ModelEntrada(props) {
           label="tipo"
           value={values.tipo}
           onChange={handleInputChange}
-        />
-        {/* <Controls.InputMask
-          grid={4}
-          label = "Valor"
-          value={values.valor.toLocaleString("pt-br", {minimumIntegerDigits: 2})}
-          onChange={handleInputChange}
-        /> */}
+        />       
         <Controls.Input 
           grid={4}
           name="valor"
@@ -82,17 +76,24 @@ export default function ModelEntrada(props) {
       </Grid>
       <Grid container spacing={3}>
         <Controls.Input
-          grid={6}
+          grid={5}
           name="categoria"
           label="Categoria"
           value={values.categoria}
           onChange={handleInputChange}
         />
         <Controls.Input
-          grid={6}
+          grid={4}
           name="descricao"
           label="Descrição"
           value={values.descricao}
+          onChange={handleInputChange}
+        />
+           <Controls.Input
+          grid={3}
+          name="estatus"
+          label="Estatus"
+          value={values.estatus}
           onChange={handleInputChange}
         />
       </Grid>

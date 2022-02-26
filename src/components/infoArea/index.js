@@ -1,29 +1,17 @@
 import * as C from './styles';
 import { formatCurrentMonth } from '../../util/data.ts';
 import { ResumoItem } from '../resumoItem';
-import {useState,useEffect} from 'react';
 import { FaCashRegister } from "react-icons/fa";
 import CategoryIcon from '@material-ui/icons/Category';
 
 
 
-export const InfoArea = ({ currentMonth, onMonthChange, income, expense,onOpenEnt,onOpenCat}) => {
-    const[ShowConta,setShowConta] = useState(false)
-    const[Saldo, setSaldo]= useState('1000');
+export const InfoArea = ({ currentMonth, onMonthChange, income, expense,onOpenEnt,onOpenCat}) => {  
    
     let strExpense = expense.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
     let strIncome = income.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
-    let result = (income - expense).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
-  
-    
-    useEffect(() => {
-        // db.findOne({ _id: id }, function (err, doc) {
-        //     if (err) return console.log(err);           
-        //     if(doc.Saldo != null){
-        //         return setSaldo(doc.Saldo.toLocaleString('pt-br', { minimumIntegerDigits: 2 }));
-        //     }           
-        //   });
-      }, []);
+    let result = (income - expense).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});    
+   
 
     const handlePrevMonth = () => {
         let [year, month] = currentMonth.split('-');
@@ -37,16 +25,7 @@ export const InfoArea = ({ currentMonth, onMonthChange, income, expense,onOpenEn
         let currentDate = new Date(parseInt(year), parseInt(month) - 1, 1);
         currentDate.setMonth(currentDate.getMonth() + 1);
         onMonthChange(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}`);
-    }
-
-    function closeConta() {
-        setShowConta(!ShowConta);
-        window.location.reload();
-      }
-      function toggleConta() {
-        setShowConta(!ShowConta);
-      }
-
+    }  
   
     return (
         <C.Container>

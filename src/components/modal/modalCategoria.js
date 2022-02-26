@@ -5,7 +5,7 @@ import api from "../../services/api";
 import Notification from "../../components/Notification";
 
 export default function ModalCategoria(props) {
-  const { onOpenCat, onOpenPoupCat } = props;
+  const { openPoupCat, setOpenPoupCat } = props;
 
   const [nome, setNome] = useState("");
   const [tipo, setTipo] = useState("");
@@ -24,20 +24,21 @@ export default function ModalCategoria(props) {
     }
 
     const response = await api.post("/categoria", dados);
+    
     setNotify({
       isOpen: true,
       message: " Categoria inserida com sucesso",
       type: "success",
     });
     
-    onOpenPoupCat(!onOpenCat)
+    setOpenPoupCat(false)
 
   }
 
   return (
     <Grid container spacing={1}>
 
-      <Grid item xs={9} >
+      <Grid item xs={8} >
         <C.InputLabel>
           <C.InputTitle>Nome</C.InputTitle>
           <C.Input
@@ -48,16 +49,23 @@ export default function ModalCategoria(props) {
         </C.InputLabel>
       </Grid>
 
-      <Grid item xs={3} >
-        <C.InputLabel>
-          <C.InputTitle>Tipo</C.InputTitle>
-          <C.Input
-            type="text"
-            value={tipo}
-            onChange={(e) => setTipo(e.target.value)}
-          />
-        </C.InputLabel>
-      </Grid>
+      <Grid item xs={4} >
+      <C.InputLabel>
+        <C.InputTitle>Tipo</C.InputTitle>
+        <C.Select value={tipo} onChange={(e) => setTipo(e.target.value)}>
+          <>    
+          <option>Selecione</option>       
+            <option key={"Despesa"} value={"Despesa"}>
+              Despesa
+            </option>
+            <option key={"Receita"} value={"Receita"}>
+              Receita
+            </option>s
+          </>
+        </C.Select>
+      </C.InputLabel>
+    </Grid>
+
 
       <Grid item xs={3} >
         <C.InputLabel>

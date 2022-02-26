@@ -9,6 +9,7 @@ export default function ModalAdd(props) {
   const [categoria, setCategoria] = useState("");  
   const [tipo, setTipo] = useState("");
   const [descricao, setDescricao] = useState("");
+  const [estatus, setEstatus] = useState("");
   const [valor, setValor] = useState(0);
   const [categorias, setCategorias] = useState([]);
   const [repetir, setRepetir] = useState(0);
@@ -53,12 +54,13 @@ export default function ModalAdd(props) {
       descricao: descricao,
       tipo: tipo,
       repetir: repetir,
-      valor: parseFloat(valor.toString().replace(",", ".")),
-      
-    }; 
+      estatus: estatus,
+      valor: parseFloat(valor.toString().replace(",", ".")),      
+    };    
 
     setValues(dados);
     handleAddEvent(dados);
+    
 
   }
 
@@ -81,6 +83,7 @@ export default function ModalAdd(props) {
           value={categoria}
           onChange={(e) => handleChangeCategoria(e.target.value)}
         >
+           <option>Selecione</option>  
           {categorias.map((item, index) => (
             <>
               <option key={index} value={item.nome}>
@@ -96,8 +99,8 @@ export default function ModalAdd(props) {
       <C.InputLabel>
         <C.InputTitle>Tipo</C.InputTitle>
         <C.Select value={tipo} onChange={(e) => setTipo(e.target.value)}>
-          <>
-            <option></option>
+          <>     
+          <option>Selecione</option>     
             <option key={"despesa"} value={"Despesa"}>
               Despesa
             </option>
@@ -121,7 +124,7 @@ export default function ModalAdd(props) {
     </Grid>             
 
 
-    <Grid item xs={10} >
+    <Grid item xs={8} >
       <C.InputLabel>
         <C.InputTitle>Descrição</C.InputTitle>
         <C.Input
@@ -143,6 +146,24 @@ export default function ModalAdd(props) {
               </option>
             </>
           ))}                      
+        </C.Select>
+      </C.InputLabel>
+    </Grid>
+
+    <Grid item xs={2} >
+      <C.InputLabel>
+        <C.InputTitle>Estatus</C.InputTitle>
+        <C.Select value={estatus} onChange={(e) => setEstatus(e.target.value)}>
+          <>      
+         
+           <option>Selecione</option>   
+            <option key={"Pago"} value={"Pago"}>
+              Pago
+            </option>
+            <option key={"Pendente"} value={"Pendente"}>
+              Pendente
+            </option>
+          </>
         </C.Select>
       </C.InputLabel>
     </Grid>

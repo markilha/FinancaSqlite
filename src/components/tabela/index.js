@@ -70,6 +70,7 @@ export const Tabela = ({ lista }) => {
       categoria: item.categoria,
       descricao: item.descricao,
       tipo: item.tipo,
+      estatus: item.estatus,
       valor: parseFloat(item.valor.replace(",", ".")),
     };
     if (item.id === 0) {
@@ -123,6 +124,9 @@ export const Tabela = ({ lista }) => {
           <C.TableHeadColumn align="center" width={100}>
             Valor
           </C.TableHeadColumn>
+          <C.TableHeadColumn align="center" width={100}>
+            Estatus
+          </C.TableHeadColumn>
           <C.TableHeadColumn align="center" width={150}>
             
           </C.TableHeadColumn>
@@ -144,7 +148,14 @@ export const Tabela = ({ lista }) => {
             >             
               {item.valor.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}
             </C.TableColumn>
+            <C.TableColumn align="right" >
+            <C.Category >
+                {item.estatus}
+              </C.Category>
 
+
+            </C.TableColumn>
+           
             {/* BOTÃO ATUALIZAR */}
             <C.TableColumn align="right">
               <C.Action >
