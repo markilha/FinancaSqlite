@@ -1,3 +1,9 @@
+import { makeStyles } from "@material-ui/core/styles";
+import Box from "@material-ui/core/Box";
+import Container from "@material-ui/core/Container";
+import Grid from "@material-ui/core/Grid";
+import Copyright from "../../components/Copyright";
+import AppBar from "../../components/AppBar";
 import React, { useEffect, useState, useContext } from "react";
 import * as C from "./styles";
 import api from "../../services/api";
@@ -10,35 +16,70 @@ import Notification from "../../components/Notification";
 import ModalAdd from "../../components/modal/modalAdd";
 import ModalCategoria from "../../components/modal/modalCategoria";
 
-export default function Entrada() {
-  const { atual, setAtual } = useContext(AuthContext); 
-  
+const drawerWidth = 240;
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+  },
+
+ 
+ uttonHidden: {
+    display: "none",
+  },
+  title: {
+    flexGrow: 1,
+  },
+ 
+  appBarSpacer: theme.mixins.toolbar,
+  content: {
+    flexGrow: 1,
+    height: "100vh",
+    overflow: "auto",
+  },
+  container: {
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
+  },
+  paper: {
+    padding: theme.spacing(2),
+    display: "flex",
+    overflow: "auto",
+    flexDirection: "column",
+  },
+  fixedHeight: {
+    height: 240,
+  },
+}));
+
+export default function Dashboard() {
+  const classes = useStyles();
+  const { atual, setAtual } = useContext(AuthContext);
+
   const [dados, setDados] = useState([]);
   const [filtro, setFiltro] = useState([]);
   const [mesAtual, setMesAtual] = useState(getCurrentMonth());
   const [renda, setRenda] = useState(0);
   const [despesa, setDespesa] = useState(0);
-  const [openPopup, setOpenPopup] = useState(true);  
-  const [openPoupCat, setOpenPoupCat] = useState(true);  
+  const [openPopup, setOpenPopup] = useState(true);
+  const [openPoupCat, setOpenPoupCat] = useState(true);
 
   const [notify, setNotify] = useState({
     isOpen: false,
     message: "",
     type: "",
-  }); 
- 
+  });
+
   useEffect(() => {
     async function loadData() {
       const response = await api.get("/entrada");
       if (response.status === 200) {
         setDados(response.data);
-        setFiltro(response.data);       
+        setFiltro(response.data);
       }
     }
-    loadData();  
-    
+    loadData();
   }, [atual]);
-
   useEffect(() => {
     let rendaCont = 0;
     let despesaCont = 0;
@@ -58,7 +99,6 @@ export default function Entrada() {
     setFiltro(filtroPorMes(dados, mesAtual));
   }, [dados, mesAtual, atual]);
 
-
   const handleMonthChange = (newMonth) => {
     setMesAtual(newMonth);
   };
@@ -70,10 +110,8 @@ export default function Entrada() {
     setOpenPoupCat(!openPoupCat);
   };
 
-
   //ENSERIR E EDITAR
-  async function handleAddEvent(valores) {  
-  
+  async function handleAddEvent(valores) {
     let errors = [];
     if (isNaN(new Date(valores.data).getTime())) {
       errors.push("Data inválida!");
@@ -87,22 +125,20 @@ export default function Entrada() {
     if (errors.length > 0) {
       alert(errors.join("\n"));
     } else {
-
-      if(valores.repetir > 0){
+      if (valores.repetir > 0) {
         let [ano, mes, dia] = valores.data.toString().split("-");
 
-        for(var i=0;i< valores.repetir;i++){  
-          
+        for (var i = 0; i < valores.repetir; i++) {
           var m = parseInt(mes) + i;
           let newMes = "";
 
-          if(m > 12){           
-            newMes = m - 12;  
-            ano = parseInt(ano) + 1;          
-          }else{
+          if (m > 12) {
+            newMes = m - 12;
+            ano = parseInt(ano) + 1;
+          } else {
             newMes = m;
           }
-          newMes = ("00" + newMes).slice(-2); 
+          newMes = ("00" + newMes).slice(-2);
 
           var dados = {
             data: `${ano}-${newMes}-${dia}`,
@@ -111,25 +147,22 @@ export default function Entrada() {
             tipo: valores.tipo,
             estatus: valores.estatus,
             valor: parseFloat(valores.valor.toString().replace(",", ".")),
-          };   
-         
+          };
+
           const response = await api.post("/entrada", dados);
         }
-        
-      }else{
-
+      } else {
         var dado = {
           data: valores.data,
           categoria: valores.categoria,
           descricao: valores.descricao,
           tipo: valores.tipo,
-          estatus:valores.estatus,
+          estatus: valores.estatus,
           valor: parseFloat(valores.valor.toString().replace(",", ".")),
-        };     
-    
+        };
+
         const response = await api.post("/entrada", dado);
       }
-     
 
       setNotify({
         isOpen: true,
@@ -142,43 +175,53 @@ export default function Entrada() {
   }
 
   return (
-    <C.Section>
-      <div className="grid">
-        <C.Header>
-          <C.HeaderText>Sistema Financeiro</C.HeaderText>
-        </C.Header>
-        <C.Body>
-          <InfoArea
-            currentMonth={mesAtual}
-            onMonthChange={handleMonthChange}
-            income={renda}
-            expense={despesa}
-            onOpenEnt={onOpenEnt}
-            onOpenCat = {onOpenCat}
-          />
+    <div className={classes.root}>
+      <AppBar title="Entradas" />
+      <main className={classes.content}>
+        <div className={classes.appBarSpacer} />
+        <Container maxWidth="lg" className={classes.container}>
+          <Grid container spacing={3}>
+            <C.Section>
+              <div className="grid">
+                <C.Body>
+                  <InfoArea
+                    currentMonth={mesAtual}
+                    onMonthChange={handleMonthChange}
+                    income={renda}
+                    expense={despesa}
+                    onOpenEnt={onOpenEnt}
+                    onOpenCat={onOpenCat}
+                  />
 
-          {/* Inicio do Popup */}
-          <Popup
-            title="Nova Entrada"
-            openPopup={openPopup}
-            setOpenPopup={setOpenPopup}
-          >
-           <ModalAdd handleAddEvent={handleAddEvent} />
-          </Popup>
+                  {/* Inicio do Popup */}
+                  <Popup
+                    title="Nova Entrada"
+                    openPopup={openPopup}
+                    setOpenPopup={setOpenPopup}
+                  >
+                    <ModalAdd handleAddEvent={handleAddEvent} />
+                  </Popup>
 
-          {/* Inicio do Popup CATEGORIA */}
-          <Popup
-            title="Nova Categoria"
-            openPopup={openPoupCat}
-            setOpenPopup={setOpenPoupCat}
-          >
-           <ModalCategoria onOpenCat onOpenPoupCat={openPoupCat} />
-          </Popup>
+                  {/* Inicio do Popup CATEGORIA */}
+                  <Popup
+                    title="Nova Categoria"
+                    openPopup={openPoupCat}
+                    setOpenPopup={setOpenPoupCat}
+                  >
+                    <ModalCategoria onOpenCat onOpenPoupCat={openPoupCat} />
+                  </Popup>
 
-          <Notification notify={notify} setNotify={setNotify} />
-          <Tabela lista={filtro} />
-        </C.Body>
-      </div>
-    </C.Section>
+                  <Notification notify={notify} setNotify={setNotify} />
+                  <Tabela lista={filtro} />
+                </C.Body>
+              </div>
+            </C.Section>
+          </Grid>
+          <Box pt={4}>
+            <Copyright />
+          </Box>
+        </Container>
+      </main>
+    </div>
   );
 }
