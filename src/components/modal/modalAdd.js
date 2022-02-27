@@ -2,6 +2,7 @@ import React, {useState,useEffect}from "react";
 import { Grid } from "@material-ui/core";
 import * as C from "./styles";
 import api from "../../services/api";
+import  {retornaMes} from '../../util/data.ts'
 
 export default function ModalAdd(props) {
   const {value, handleAddEvent} = props;
@@ -41,8 +42,6 @@ export default function ModalAdd(props) {
     loadCategorias();
   }, []);
 
- 
-
   function handleChangeCategoria(item) {
     setCategoria(item);
   }
@@ -55,8 +54,9 @@ export default function ModalAdd(props) {
       tipo: tipo,
       repetir: repetir,
       estatus: estatus,
-      valor: parseFloat(valor.toString().replace(",", ".")),      
-    };    
+      valor: parseFloat(valor.toString().replace(",", ".")),  
+      mes: retornaMes(data)    
+    };     
 
     setValues(dados);
     handleAddEvent(dados);

@@ -16,21 +16,18 @@ import Notification from "../../components/Notification";
 import ModalAdd from "../../components/modal/modalAdd";
 import ModalCategoria from "../../components/modal/modalCategoria";
 
-const drawerWidth = 240;
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
-  },
-
- 
+  }, 
  uttonHidden: {
     display: "none",
   },
   title: {
     flexGrow: 1,
-  },
- 
+  }, 
   appBarSpacer: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
@@ -111,7 +108,7 @@ export default function Dashboard() {
   };
 
   //ENSERIR E EDITAR
-  async function handleAddEvent(valores) {
+  async function handleAddEvent(valores) { 
     let errors = [];
     if (isNaN(new Date(valores.data).getTime())) {
       errors.push("Data inválida!");
@@ -147,6 +144,7 @@ export default function Dashboard() {
             tipo: valores.tipo,
             estatus: valores.estatus,
             valor: parseFloat(valores.valor.toString().replace(",", ".")),
+            mes: valores.mes
           };
 
           const response = await api.post("/entrada", dados);
@@ -159,6 +157,7 @@ export default function Dashboard() {
           tipo: valores.tipo,
           estatus: valores.estatus,
           valor: parseFloat(valores.valor.toString().replace(",", ".")),
+          mes: valores.mes
         };
 
         const response = await api.post("/entrada", dado);

@@ -31,3 +31,10 @@ export const formatCurrentMonth = (currentMonth) => {
     let months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
     return `${months[parseInt(month) - 1]} de ${year}`;
 }
+
+export const retornaMes = (date) => {
+    let [ano,mes,dia] = date.split('-');
+    let months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+    return `${months[parseInt(mes) - 1]}`;
+}
+
