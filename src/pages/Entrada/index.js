@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Dashboard() {
+export default function Entrada() {
   const classes = useStyles();
   const { atual, setAtual } = useContext(AuthContext);
 
@@ -77,6 +77,7 @@ export default function Dashboard() {
     }
     loadData();
   }, [atual]);
+  
   useEffect(() => {
     let rendaCont = 0;
     let despesaCont = 0;
