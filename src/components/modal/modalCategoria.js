@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import { Grid } from "@material-ui/core";
 import * as C from "./styles";
 import api from "../../services/api";
 import Notification from "../../components/Notification";
 
 export default function ModalCategoria(props) {
-  const { openPoupCat, setOpenPoupCat } = props;
+  const {setOpenPoupCat } = props;
 
   const [nome, setNome] = useState("");
   const [tipo, setTipo] = useState("");
@@ -29,10 +29,8 @@ export default function ModalCategoria(props) {
       isOpen: true,
       message: " Categoria inserida com sucesso",
       type: "success",
-    });
-    
+    });    
     setOpenPoupCat(false)
-
   }
 
   return (
@@ -74,7 +72,6 @@ export default function ModalCategoria(props) {
         </C.InputLabel>
       </Grid>
       <Notification notify={notify} setNotify={setNotify} />
-
     </Grid>
 
   );

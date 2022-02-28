@@ -58,9 +58,8 @@ export default function Entrada() {
   const [mesAtual, setMesAtual] = useState(getCurrentMonth());
   const [renda, setRenda] = useState(0);
   const [despesa, setDespesa] = useState(0);
-  const [openPopup, setOpenPopup] = useState(true);
-  const [openPoupCat, setOpenPoupCat] = useState(true);
-
+  const [openPopup, setOpenPopup] = useState(false);
+  const [openPoupCat, setOpenPoupCat] = useState(false);
   const [notify, setNotify] = useState({
     isOpen: false,
     message: "",
@@ -170,7 +169,7 @@ export default function Entrada() {
         type: "success",
       });
       setAtual(!atual);
-      setOpenPopup(!openPopup);
+      setOpenPopup(false);
     }
   }
 
@@ -208,7 +207,7 @@ export default function Entrada() {
                     openPopup={openPoupCat}
                     setOpenPopup={setOpenPoupCat}
                   >
-                    <ModalCategoria onOpenCat onOpenPoupCat={openPoupCat} />
+                    <ModalCategoria setOpenPoupCat={setOpenPoupCat} />
                   </Popup>
 
                   <Notification notify={notify} setNotify={setNotify} />

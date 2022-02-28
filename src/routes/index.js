@@ -1,15 +1,18 @@
 import React from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import {Switch } from "react-router-dom";
 import Entrada from "../pages/Entrada";
-import DashBoard from "../pages/dashboard";
+import Dashboard from "../pages/dashboard";
+import Signin from "../pages/signin";
+import Route from "./Router";
 
 export default function Routes() {
   return (
-    <BrowserRouter>
+  
       <Switch>
-        <Route exact path="/" component={DashBoard} />
-        <Route exact path="/entrada" component={Entrada} />
+        <Route exact path="/" component={Signin} />
+        <Route exact path="/dashboard" component={Dashboard} isPrivate />
+        <Route exact path="/entrada" component={Entrada} isPrivate />
       </Switch>
-    </BrowserRouter>
+    
   );
 }
