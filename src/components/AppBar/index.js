@@ -1,11 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import MenuIcon from "@material-ui/icons/Menu";
 import clsx from "clsx";
 import IconButton from "@material-ui/core/IconButton";
 import Badge from "@material-ui/core/Badge";
-import NotificationsIcon from "@material-ui/icons/Notifications";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -14,6 +13,7 @@ import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { mainListItems, secondaryListItems } from './listItems';
+import { AuthContext } from "../../contexts/auth";
 
 const drawerWidth = 240;
 
@@ -99,7 +99,10 @@ const useStyles = makeStyles((theme) => ({
 export default function AppB(props) {
   const { title } = props;
   const classes = useStyles();
+  const{user} = useContext(AuthContext);
+ 
 
+ 
   const [open, setOpen] = React.useState(true);
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -136,9 +139,8 @@ export default function AppB(props) {
           >
             {title}
           </Typography>
-          <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
-              <NotificationsIcon />
+          <IconButton color="inherit">         
+            <Badge badgeContent={"Usuário"} color="secondary">                      
             </Badge>
           </IconButton>
         </Toolbar>
@@ -156,9 +158,9 @@ export default function AppB(props) {
           </IconButton>
         </div>
         <Divider />
-        <List>{mainListItems}</List>
+        <List>{mainListItems()}</List>
         <Divider />
-        <List>{secondaryListItems}</List>
+        <List>{secondaryListItems()}</List>
       </Drawer>
     </>
   );

@@ -11,7 +11,7 @@ import Orders from "./Orders";
 import Copyright from "../../components/Copyright";
 import AppBar from "../../components/AppBar";
 
-const drawerWidth = 240;
+
 
 const useStyles = makeStyles((theme) => ({
   root: {

@@ -1,29 +1,35 @@
-import React, { useState, createContext } from "react";
+import React from "react";
 import api from "../services/api";
 
-export const AuthContext = createContext({});
+
+export const AuthContext = React.createContext({});
 
 function AuthProvider({ children }) {
-  const [atual, setAtual] = useState(true);
-  const [user, setUser] = useState(null);
-  const [loadingAuth, setLoadingAuth] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [atual, setAtual] = React.useState(true);
+  const [user, setUser] = React.useState(null);
+  const [loadingAuth, setLoadingAuth] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
+ 
+ 
+
 
   function storageUser(data) {
     localStorage.setItem("SistemaUser", JSON.stringify(data));
   }
 
   React.useEffect(() => {
-    function loadStorage() {
-      const storageUser = localStorage.getItem("SistemaUser");
-      if (storageUser) {
-        setUser(JSON.parse(storageUser));
+   function loadStorage() {
+      const storage = localStorage.getItem("SistemaUser");
+      if (storage) {           
+        setUser(JSON.parse(storage)); 
         setLoading(false);
+        setUser(JSON.parse(storage)); 
       }
       setLoading(false);
     }
     loadStorage();
   }, []);
+
   //Fazendo login do usuario
   async function signIn(email, senha) {
     try {
@@ -40,16 +46,18 @@ function AuthProvider({ children }) {
   }
 
   async function signOut(){   
-    localStorage.removeItem('SistemaUser');
+    localStorage.removeItem('SistemaUser');    
     setUser(null);
   }
 
   return (
     <AuthContext.Provider value={{
        atual, 
+       user,
        setAtual,
-        signed: !!user, 
-        signIn 
+       signed : !!user, 
+        signIn,
+        signOut
         }}>
       {children}
     </AuthContext.Provider>

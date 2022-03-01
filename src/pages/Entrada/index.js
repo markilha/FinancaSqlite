@@ -11,12 +11,10 @@ import { Tabela } from "../../components/tabela";
 import { AuthContext } from "../../contexts/auth";
 import { InfoArea } from "../../components/infoArea";
 import Popup from "../../components/Popup";
-import { getCurrentMonth, filtroPorMes } from "../../util/data.ts";
+import { getCurrentMonth, filtroPorMes, carregaUser} from "../../util/data.ts";
 import Notification from "../../components/Notification";
 import ModalAdd from "../../components/modal/modalAdd";
 import ModalCategoria from "../../components/modal/modalCategoria";
-
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,9 +49,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Entrada() {
   const classes = useStyles();
-  const { atual, setAtual } = useContext(AuthContext);
+  const { atual, setAtual,user } = useContext(AuthContext);
 
-  const [dados, setDados] = useState([]);
+  const [dados, setDados] = useState([]);  
   const [filtro, setFiltro] = useState([]);
   const [mesAtual, setMesAtual] = useState(getCurrentMonth());
   const [renda, setRenda] = useState(0);
@@ -65,10 +63,11 @@ export default function Entrada() {
     message: "",
     type: "",
   });
+ 
 
   useEffect(() => {
     async function loadData() {
-      const response = await api.get("/entrada");
+      const response = await api.get(`/entrada/${user.id}`);
       if (response.status === 200) {
         setDados(response.data);
         setFiltro(response.data);
@@ -108,8 +107,11 @@ export default function Entrada() {
   };
 
   //ENSERIR E EDITAR
-  async function handleAddEvent(valores) { 
+  async function handleAddEvent(valores) {
+    console.log(valores)
+   
     let errors = [];
+    let mensagem = "";
     if (isNaN(new Date(valores.data).getTime())) {
       errors.push("Data inválida!");
     }
@@ -144,10 +146,12 @@ export default function Entrada() {
             tipo: valores.tipo,
             estatus: valores.estatus,
             valor: parseFloat(valores.valor.toString().replace(",", ".")),
-            mes: valores.mes
+            mes: valores.mes,
+            usuario: valores.id
           };
 
           const response = await api.post("/entrada", dados);
+         mensagem = response.data;
         }
       } else {
         var dado = {
@@ -157,15 +161,17 @@ export default function Entrada() {
           tipo: valores.tipo,
           estatus: valores.estatus,
           valor: parseFloat(valores.valor.toString().replace(",", ".")),
-          mes: valores.mes
+          mes: valores.mes,
+          usuario: valores.id
         };
 
         const response = await api.post("/entrada", dado);
+        mensagem = response.data;
       }
 
       setNotify({
         isOpen: true,
-        message: "Inserido com sucesso",
+        message: mensagem,
         type: "success",
       });
       setAtual(!atual);

@@ -17,6 +17,14 @@ export const filtroPorMes = (list, date) => {
   return newList;
 };
 
+export const carregaUser = (list) => {
+  let newList = [];
+  for (let i in list) {  
+         newList.push(list[i]);
+  }
+  return newList;
+};
+
 export const balanco = (list,date) => { 
       let rendaCont = 0;
   let despesaCont = 0;

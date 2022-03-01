@@ -1,10 +1,12 @@
-import React, {useState,useEffect}from "react";
+import React, {useState,useEffect, useContext}from "react";
 import { Grid } from "@material-ui/core";
 import * as C from "./styles";
 import api from "../../services/api";
-import  {retornaMes} from '../../util/data.ts'
+import  {retornaMes} from '../../util/data.ts';
+import {AuthContext} from '../../contexts/auth'
 
 export default function ModalAdd(props) {
+  const{user} = useContext(AuthContext);
   const {value, handleAddEvent} = props;
   const [data, setData] = useState("");  
   const [categoria, setCategoria] = useState("");  
@@ -45,8 +47,7 @@ export default function ModalAdd(props) {
   function handleChangeCategoria(item) {
     setCategoria(item);
   }
-  function handleEntrada() {  
-
+  function handleEntrada() {
     const dados = {
       data: data,
       categoria: categoria,
@@ -55,12 +56,12 @@ export default function ModalAdd(props) {
       repetir: repetir,
       estatus: estatus,
       valor: parseFloat(valor.toString().replace(",", ".")),  
-      mes: retornaMes(data)    
+      mes: retornaMes(data),
+      usuario: user.id
     };     
 
     setValues(dados);
-    handleAddEvent(dados);
-    
+    handleAddEvent(dados);   
 
   }
 

@@ -3,23 +3,25 @@ import { useTheme } from '@material-ui/core/styles';
 import { LineChart, Line, XAxis, YAxis, Label, ResponsiveContainer,Tooltip,CartesianGrid} from 'recharts';
 import Title from './Title';
 import api from '../../services/api';
+import {AuthContext} from '../../contexts/auth';
 
 
 
 
 export default function Chart() {
   const theme = useTheme();
+  const {user} = React.useContext(AuthContext)
   const [despesas,setDespesas] = React.useState([]);
   const [receitas,setReceitas] = React.useState([]);
 
   React.useEffect(()=>{
     async function loadDes(){
-      const response = await api.get('/entrada/sumdes');
+      const response = await api.get(`/entrada/sumdes/${user.id}`);
      setDespesas(response.data);
     }
     loadDes();
     async function loadRec(){
-      const response = await api.get('/entrada/sumrec');
+      const response = await api.get(`/entrada/sumrec/${user.id}`);
      setReceitas(response.data);
     }
     loadRec();

@@ -1,15 +1,13 @@
 import React from "react";
-import Link from "@material-ui/core/Link";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Title from "./Title";
 import { getCurrentMonth, balanco,formatCurrentMonth } from "../../util/data.ts";
 import api from "../../services/api";
 import { ResumoItem } from "../../components/resumoItem";
+import {AuthContext} from '../../contexts/auth';
 
-function preventDefault(event) {
-  event.preventDefault();
-}
+
 
 const useStyles = makeStyles({
   depositContext: {
@@ -21,10 +19,11 @@ export default function Deposits() {
   const classes = useStyles();
   const [dados, setDados] = React.useState();
   const [saldo, setSaldo] = React.useState(0);
+  const{user} = React.useContext(AuthContext);
 
   React.useEffect(() => {
     async function loadData() {
-      const response = await api.get("/entrada");
+      const response = await api.get(`/entrada/${user.id}`);
       if (response.status === 200) {
         setDados(response.data);
         setSaldo(balanco(response.data, getCurrentMonth()));
