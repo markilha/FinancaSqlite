@@ -13,7 +13,7 @@ import { CloseSharp } from "@material-ui/icons";
 export const mainListItems = () => {
   return (
     <div>
-      <Link href="/">
+      <Link href="/dashboard">
         <ListItem button>
           <ListItemIcon>
             <DashboardIcon />

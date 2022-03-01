@@ -15,6 +15,7 @@ import { AuthContext } from '../../contexts/auth';
 
 
 
+
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
@@ -42,8 +43,8 @@ export default function SignIn() {
   const[senha,setSenha]= useState('');
 
   const handleSubmit = (e)=>{
-      e.preventDefault();
-      signIn(email,senha)
+      e.preventDefault();  
+     signIn(email,senha);
   }
 
   return (
