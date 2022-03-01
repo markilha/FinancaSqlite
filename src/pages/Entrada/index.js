@@ -10,22 +10,22 @@ import api from "../../services/api";
 import { Tabela } from "../../components/tabela";
 import { AuthContext } from "../../contexts/auth";
 import { InfoArea } from "../../components/infoArea";
-import Popup from "../../components/Popup";
-import { getCurrentMonth, filtroPorMes, carregaUser} from "../../util/data.ts";
-import Notification from "../../components/Notification";
+import Popup from "../../components/entrada/Popup";
+import { getCurrentMonth, filtroPorMes } from "../../util/data.ts";
+import Notification from "../../components/entrada/Notification";
 import ModalAdd from "../../components/modal/modalAdd";
 import ModalCategoria from "../../components/modal/modalCategoria";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
-  }, 
- uttonHidden: {
+  },
+  uttonHidden: {
     display: "none",
   },
   title: {
     flexGrow: 1,
-  }, 
+  },
   appBarSpacer: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
@@ -49,9 +49,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Entrada() {
   const classes = useStyles();
-  const { atual, setAtual,user } = useContext(AuthContext);
+  const { atual, setAtual, user } = useContext(AuthContext);
 
-  const [dados, setDados] = useState([]);  
+  const [dados, setDados] = useState([]);
   const [filtro, setFiltro] = useState([]);
   const [mesAtual, setMesAtual] = useState(getCurrentMonth());
   const [renda, setRenda] = useState(0);
@@ -63,7 +63,6 @@ export default function Entrada() {
     message: "",
     type: "",
   });
- 
 
   useEffect(() => {
     async function loadData() {
@@ -75,7 +74,7 @@ export default function Entrada() {
     }
     loadData();
   }, [atual]);
-  
+
   useEffect(() => {
     let rendaCont = 0;
     let despesaCont = 0;
@@ -108,8 +107,8 @@ export default function Entrada() {
 
   //ENSERIR E EDITAR
   async function handleAddEvent(valores) {
-    console.log(valores)
-   
+    console.log(valores);
+
     let errors = [];
     let mensagem = "";
     if (isNaN(new Date(valores.data).getTime())) {
@@ -147,11 +146,11 @@ export default function Entrada() {
             estatus: valores.estatus,
             valor: parseFloat(valores.valor.toString().replace(",", ".")),
             mes: valores.mes,
-            usuario: valores.id
+            usuario: valores.id,
           };
 
           const response = await api.post("/entrada", dados);
-         mensagem = response.data;
+          mensagem = response.data;
         }
       } else {
         var dado = {
@@ -162,7 +161,7 @@ export default function Entrada() {
           estatus: valores.estatus,
           valor: parseFloat(valores.valor.toString().replace(",", ".")),
           mes: valores.mes,
-          usuario: valores.id
+          usuario: valores.id,
         };
 
         const response = await api.post("/entrada", dado);
@@ -188,7 +187,7 @@ export default function Entrada() {
           <Grid container spacing={3}>
             <C.Section>
               <div className="grid">
-                <C.Body>
+               <C.Body>
                   <InfoArea
                     currentMonth={mesAtual}
                     onMonthChange={handleMonthChange}
@@ -197,28 +196,28 @@ export default function Entrada() {
                     onOpenEnt={onOpenEnt}
                     onOpenCat={onOpenCat}
                   />
-
-                  {/* Inicio do Popup */}
-                  <Popup
-                    title="Nova Entrada"
-                    openPopup={openPopup}
-                    setOpenPopup={setOpenPopup}
-                  >
-                    <ModalAdd handleAddEvent={handleAddEvent} />
-                  </Popup>
-
-                  {/* Inicio do Popup CATEGORIA */}
-                  <Popup
-                    title="Nova Categoria"
-                    openPopup={openPoupCat}
-                    setOpenPopup={setOpenPoupCat}
-                  >
-                    <ModalCategoria setOpenPoupCat={setOpenPoupCat} />
-                  </Popup>
-
-                  <Notification notify={notify} setNotify={setNotify} />
                   <Tabela lista={filtro} />
                 </C.Body>
+
+                {/* Inicio do Popup */}
+                <Popup
+                  title="Nova Entrada"
+                  openPopup={openPopup}
+                  setOpenPopup={setOpenPopup}
+                >
+                  <ModalAdd handleAddEvent={handleAddEvent} />
+                </Popup>
+
+                {/* Inicio do Popup CATEGORIA */}
+                <Popup
+                  title="Nova Categoria"
+                  openPopup={openPoupCat}
+                  setOpenPopup={setOpenPoupCat}
+                >
+                  <ModalCategoria setOpenPoupCat={setOpenPoupCat} />
+                </Popup>
+
+                <Notification notify={notify} setNotify={setNotify} />
               </div>
             </C.Section>
           </Grid>

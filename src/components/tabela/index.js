@@ -2,9 +2,9 @@ import * as C from "./styles";
 import { useState, useContext } from "react";
 import { FiDelete, FiEdit2 } from "react-icons/fi";
 import api from "../../services/api";
-import Popup from "../../components/Popup";
-import Notification from "../../components/Notification";
-import ConfirmDialog from "../../components/ConfirmDialog";
+import Popup from "../../components/entrada/Popup";
+import Notification from "../../components/entrada/Notification";
+import ConfirmDialog from "../../components/entrada/ConfirmDialog";
 import ModelEntrada from "../../components/modal/modalEntrada";
 import {formatDate} from "../../util/data.ts"
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Grid } from "@material-ui/core";
 import Controls from "../controls/Controls";
-import { useForm } from "../useForm";
+import { useForm } from "../entrada/useForm";
 
 const initialFValues = {
   id: 0,

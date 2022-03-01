@@ -7,6 +7,7 @@ export const AuthContext = React.createContext({});
 function AuthProvider({ children }) {
   const [atual, setAtual] = React.useState(true);
   const [user, setUser] = React.useState(null);
+  const [dados, setDados] = React.useState([]);
   const [loadingAuth, setLoadingAuth] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
  
@@ -18,16 +19,17 @@ function AuthProvider({ children }) {
   }
 
   React.useEffect(() => {
-   function loadStorage() {
+    setLoading(true);  
+   function loadStorage() {    
       const storage = localStorage.getItem("SistemaUser");
-      if (storage) {           
-        setUser(JSON.parse(storage)); 
-        setLoading(false);
-        setUser(JSON.parse(storage)); 
+      if (storage) {
+        setDados(JSON.parse(storage)) 
+        setUser(dados)
+        setLoading(false);  
       }
-      setLoading(false);
     }
     loadStorage();
+    
   }, []);
 
   //Fazendo login do usuario

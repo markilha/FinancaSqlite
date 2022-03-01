@@ -2,7 +2,7 @@ import React, { useState} from "react";
 import { Grid } from "@material-ui/core";
 import * as C from "./styles";
 import api from "../../services/api";
-import Notification from "../../components/Notification";
+import Notification from "../../components/entrada/Notification";
 
 export default function ModalCategoria(props) {
   const {setOpenPoupCat } = props;

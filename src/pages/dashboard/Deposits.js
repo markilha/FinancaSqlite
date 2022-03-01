@@ -35,7 +35,7 @@ export default function Deposits() {
   return (
     <React.Fragment>
       <Title>Balanço</Title>
-      <Typography component="p" variant="h4">
+      <Typography component="span" variant="h4">
         <ResumoItem
           value={`R$ ${saldo.toLocaleString("pt-br")}`}
           color={saldo < 0 ? "red" : "green"}

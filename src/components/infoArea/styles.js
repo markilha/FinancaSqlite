@@ -32,7 +32,7 @@ export const ResumeArea = styled.div`
     flex: 2;
     display: flex;
 `;
-export const Action = styled.td`
+export const Action = styled.div`
 border: 0;
 padding:5px;
 align-items: center;

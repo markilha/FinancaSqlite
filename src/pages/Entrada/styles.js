@@ -6,7 +6,7 @@ export const Section = styled.section`
   margin-right: 14px;
   padding: 2rem;
   height: 60rem;
-  background-color: #f5f5fd;
+  background-color: transparent;
   .grid {
     margin-top: 0.5rem;
     z-index: 2;
