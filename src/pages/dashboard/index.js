@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
@@ -10,6 +10,7 @@ import Deposits from "./Deposits";
 import Orders from "./Orders";
 import Copyright from "../../components/Copyright";
 import AppBar from "../../components/AppBar";
+import { AuthContext } from "../../contexts/auth";
 
 
 
@@ -49,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Dashboard() {
   const classes = useStyles();
+  const{state} = useContext(AuthContext);
 
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 

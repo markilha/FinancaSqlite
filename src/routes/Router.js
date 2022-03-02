@@ -8,12 +8,13 @@ export default function RouteWrapper({
   component: Component,
   isPrivate,
   ...rest
-}){
-  const { signed, loading } = React.useContext(AuthContext);
+}){  
+
+ const{signed,loading} = React.useContext(AuthContext); 
 
   if(loading){
     return(
-      <div> Carregando.... </div>
+      <div></div>
     )
   }
 
@@ -24,6 +25,7 @@ export default function RouteWrapper({
   if(signed && !isPrivate){
     return <Redirect to="/dashboard" />
   }
+
 
   return(
     <Route

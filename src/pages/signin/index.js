@@ -11,6 +11,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Copyright from '../../components/Copyright';
 import { AuthContext } from '../../contexts/auth';
+import Notification from '../../components/entrada/Notification'
 
 
 
@@ -38,13 +39,23 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignIn() {
   const classes = useStyles();
-  const {signIn} = useContext(AuthContext);
+  const {signIn,mensagem} = useContext(AuthContext);
   const[email, setEmail] = useState('');
   const[senha,setSenha]= useState('');
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: "",
+    type: "",
+  });
 
   const handleSubmit = (e)=>{
       e.preventDefault();  
      signIn(email,senha);
+     setNotify({
+      isOpen: true,
+      message: mensagem,
+      type: "success",
+    });
   }
 
   return (
@@ -115,6 +126,7 @@ export default function SignIn() {
       <Box mt={8}>
         <Copyright />
       </Box>
+      <Notification notify={notify} setNotify={setNotify} />
     </Container>
   );
 }

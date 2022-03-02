@@ -100,7 +100,18 @@ export default function AppB(props) {
   const { title } = props;
   const classes = useStyles();
   const{user} = useContext(AuthContext);
+  const [state, setState] = React.useState([])
+
+
+  const add = () =>{    
+    const storage = localStorage.getItem("SistemaUser");
+    setState(JSON.parse(storage).nome);
+    setState((prevState)=> prevState)
+  }
+
  
+  
+
 
  
   const [open, setOpen] = React.useState(true);
@@ -140,7 +151,7 @@ export default function AppB(props) {
             {title}
           </Typography>
           <IconButton color="inherit">         
-            <Badge badgeContent={"Usuário"} color="secondary">                      
+            <Badge badgeContent={state.nome} color="secondary">                      
             </Badge>
           </IconButton>
         </Toolbar>

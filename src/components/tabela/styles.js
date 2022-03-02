@@ -102,7 +102,7 @@ export const Button = styled.button`
         color: white;
     }
 `;
-export const Action = styled.td`
+export const Action = styled.div`
 border: 0;
 padding:5px;
 align-items: ${props => props.align};

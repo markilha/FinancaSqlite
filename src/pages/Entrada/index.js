@@ -4,7 +4,7 @@ import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Copyright from "../../components/Copyright";
 import AppBar from "../../components/AppBar";
-import React, { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import * as C from "./styles";
 import api from "../../services/api";
 import { Tabela } from "../../components/tabela";
@@ -49,8 +49,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Entrada() {
   const classes = useStyles();
-  const { atual, setAtual, user } = useContext(AuthContext);
-
+  const { atual, setAtual,state } = useContext(AuthContext);
+  const [usuario, setUsuario] = useState([])
   const [dados, setDados] = useState([]);
   const [filtro, setFiltro] = useState([]);
   const [mesAtual, setMesAtual] = useState(getCurrentMonth());
@@ -64,9 +64,13 @@ export default function Entrada() {
     type: "",
   });
 
-  useEffect(() => {
+
+
+ 
+  useEffect(() => {    
+   
     async function loadData() {
-      const response = await api.get(`/entrada/${user.id}`);
+      const response = await api.get(`/entrada/${state.id}}`);
       if (response.status === 200) {
         setDados(response.data);
         setFiltro(response.data);
@@ -146,7 +150,7 @@ export default function Entrada() {
             estatus: valores.estatus,
             valor: parseFloat(valores.valor.toString().replace(",", ".")),
             mes: valores.mes,
-            usuario: valores.id,
+            usuario: usuario.id,
           };
 
           const response = await api.post("/entrada", dados);
@@ -161,7 +165,7 @@ export default function Entrada() {
           estatus: valores.estatus,
           valor: parseFloat(valores.valor.toString().replace(",", ".")),
           mes: valores.mes,
-          usuario: valores.id,
+          usuario: usuario.id,
         };
 
         const response = await api.post("/entrada", dado);

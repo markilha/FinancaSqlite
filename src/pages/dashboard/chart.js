@@ -1,27 +1,25 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useTheme } from '@material-ui/core/styles';
 import { LineChart, Line, XAxis, YAxis, Label, ResponsiveContainer,Tooltip,CartesianGrid} from 'recharts';
 import Title from './Title';
 import api from '../../services/api';
-import {AuthContext} from '../../contexts/auth';
-
-
+import { AuthContext } from '../../contexts/auth';
 
 
 export default function Chart() {
-  const theme = useTheme();
-  const {user} = React.useContext(AuthContext)
+  const theme = useTheme(); 
   const [despesas,setDespesas] = React.useState([]);
   const [receitas,setReceitas] = React.useState([]);
-
+  const {state} = useContext(AuthContext);
+ 
   React.useEffect(()=>{
     async function loadDes(){
-      const response = await api.get(`/entrada/sumdes/${user.id}`);
+      const response = await api.get(`/entrada/sumdes/${state.id}`);
      setDespesas(response.data);
     }
     loadDes();
     async function loadRec(){
-      const response = await api.get(`/entrada/sumrec/${user.id}`);
+      const response = await api.get(`/entrada/sumrec/${state.id}`);
      setReceitas(response.data);
     }
     loadRec();

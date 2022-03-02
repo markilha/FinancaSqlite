@@ -26,14 +26,14 @@ const useStyles = makeStyles((theme) => ({
 export default function Orders() {
   const [dados,setDados]= React.useState([]);
   const [filtro,setFiltro]= React.useState([]);
- const {user} = React.useContext(AuthContext)
+ const {state} = React.useContext(AuthContext)
  
  
 
  React.useEffect(() => {  
  
     async function loadData() {
-      const response = await api.get(`/entrada/${user.id}`);
+      const response = await api.get(`/entrada/${state.id}`);
       if (response.status === 200) {
         setDados(response.data);       
       }

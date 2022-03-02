@@ -1,44 +1,46 @@
-import React from "react";
+import {useState,useEffect,createContext} from "react";
 import api from "../services/api";
 
 
-export const AuthContext = React.createContext({});
+export const AuthContext = createContext({});
 
 function AuthProvider({ children }) {
-  const [atual, setAtual] = React.useState(true);
-  const [user, setUser] = React.useState(null);
-  const [dados, setDados] = React.useState([]);
-  const [loadingAuth, setLoadingAuth] = React.useState(false);
-  const [loading, setLoading] = React.useState(true);
- 
+  const [atual, setAtual] = useState(true);  
+  const [loadingAuth, setLoadingAuth] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [mensagem, setMensagem]= useState('') 
+  const [state,setState] = useState(null); 
+
+  const loadStorage = () =>{    
+    const storage = localStorage.getItem("SistemaUser");
+    setState(JSON.parse(storage));
+    setState((prevState)=> prevState)
+  }
 
 
   function storageUser(data) {
     localStorage.setItem("SistemaUser", JSON.stringify(data));
   }
 
-  React.useEffect(() => {
-    setLoading(true);  
-   function loadStorage() {    
-      const storage = localStorage.getItem("SistemaUser");
-      if (storage) {
-        setDados(JSON.parse(storage)) 
-        setUser(dados)
-        setLoading(false);  
-      }
-    }
+  useEffect(() => {
+    setLoading(true);
     loadStorage();    
   }, []);
 
   //Fazendo login do usuario
-  async function signIn(email, senha) {
+  async function signIn(email, senha) {   
     try {
       setLoadingAuth(true);
-      const response = await api.get(`/usuario/${email}`); 
-      if (senha === response.data.password) {
-        setUser(response.data);
+      const response = await api.get(`/usuario/${email}`);
+      
+      if (senha === response.data.senha) {      
         storageUser(response.data);
+        loadStorage(); 
         setLoadingAuth(false);
+        setMensagem('Logado com sucesso!!!')
+
+      }else{
+        setMensagem('USUÁRIO ou SENHA não correspondem!!!!');
       }
     } catch (err) {
       console.log(err);
@@ -46,18 +48,18 @@ function AuthProvider({ children }) {
   }
 
   async function signOut(){   
-    localStorage.removeItem('SistemaUser');    
-    setUser(null);
+    localStorage.removeItem('SistemaUser');   
   }
 
   return (
     <AuthContext.Provider value={{
-       atual, 
-       user,
-       setAtual,
-       signed : !!user, 
+       atual,
+       state,  
+       signed : !!state,     
+       setAtual,      
         signIn,
-        signOut
+        signOut,
+        mensagem
         }}>
       {children}
     </AuthContext.Provider>
