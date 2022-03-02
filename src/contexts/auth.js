@@ -11,7 +11,6 @@ function AuthProvider({ children }) {
   const [loadingAuth, setLoadingAuth] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
  
- 
 
 
   function storageUser(data) {
@@ -28,8 +27,7 @@ function AuthProvider({ children }) {
         setLoading(false);  
       }
     }
-    loadStorage();
-    
+    loadStorage();    
   }, []);
 
   //Fazendo login do usuario
