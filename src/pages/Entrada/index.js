@@ -49,8 +49,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Entrada() {
   const classes = useStyles();
-  const { atual, setAtual,state } = useContext(AuthContext);
-  const [usuario, setUsuario] = useState([])
+  const { atual, setAtual,user } = useContext(AuthContext); 
   const [dados, setDados] = useState([]);
   const [filtro, setFiltro] = useState([]);
   const [mesAtual, setMesAtual] = useState(getCurrentMonth());
@@ -67,10 +66,11 @@ export default function Entrada() {
 
 
  
-  useEffect(() => {    
-   
+  useEffect(() => {
+    console.log(user)  
+
     async function loadData() {
-      const response = await api.get(`/entrada/${state.id}}`);
+      const response = await api.get(`/entrada/${user[0].id}}`);
       if (response.status === 200) {
         setDados(response.data);
         setFiltro(response.data);
@@ -150,7 +150,7 @@ export default function Entrada() {
             estatus: valores.estatus,
             valor: parseFloat(valores.valor.toString().replace(",", ".")),
             mes: valores.mes,
-            usuario: usuario.id,
+            usuario: user[0].id,
           };
 
           const response = await api.post("/entrada", dados);
@@ -165,7 +165,7 @@ export default function Entrada() {
           estatus: valores.estatus,
           valor: parseFloat(valores.valor.toString().replace(",", ".")),
           mes: valores.mes,
-          usuario: usuario.id,
+          usuario: user[0].id,
         };
 
         const response = await api.post("/entrada", dado);

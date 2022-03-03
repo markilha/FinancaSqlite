@@ -9,12 +9,12 @@ function AuthProvider({ children }) {
   const [loadingAuth, setLoadingAuth] = useState(false);
   const [loading, setLoading] = useState(true);
   const [mensagem, setMensagem]= useState('') 
-  const [state,setState] = useState(null); 
+ const user =[];
+
 
   const loadStorage = () =>{    
     const storage = localStorage.getItem("SistemaUser");
-    setState(JSON.parse(storage));
-    setState((prevState)=> prevState)
+    return JSON.parse(storage); 
   }
 
 
@@ -23,8 +23,8 @@ function AuthProvider({ children }) {
   }
 
   useEffect(() => {
-    setLoading(true);
-    loadStorage();    
+    user.push(loadStorage());
+    setLoading(true);  
   }, []);
 
   //Fazendo login do usuario
@@ -54,8 +54,8 @@ function AuthProvider({ children }) {
   return (
     <AuthContext.Provider value={{
        atual,
-       state,  
-       signed : !!state,     
+       user,
+       signed : !!user,
        setAtual,      
         signIn,
         signOut,

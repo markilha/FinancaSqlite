@@ -12,11 +12,13 @@ export default function RouteWrapper({
 
  const{signed,loading} = React.useContext(AuthContext); 
 
+
   if(loading){
     return(
       <div></div>
     )
   }
+  console.log(signed)
 
   if(!signed && isPrivate){
     return <Redirect to="/" />
