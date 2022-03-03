@@ -10,15 +10,14 @@ export default function RouteWrapper({
   ...rest
 }){  
 
- const{signed,loading} = React.useContext(AuthContext); 
+ const{user, loading} = React.useContext(AuthContext); 
 
-
+ const signed = true;
   if(loading){
     return(
       <div></div>
     )
-  }
-  console.log(signed)
+  }  
 
   if(!signed && isPrivate){
     return <Redirect to="/" />

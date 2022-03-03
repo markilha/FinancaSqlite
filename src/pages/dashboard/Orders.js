@@ -8,7 +8,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Title from './Title';
 import api from "../../services/api";
-import { getCurrentMonth, filtroPorMes } from "../../util/data.ts";
+import { getCurrentMonth, filtroPorMes,carregaUser } from "../../util/data.ts";
 import {AuthContext} from '../../contexts/auth';
 
 
@@ -26,19 +26,18 @@ const useStyles = makeStyles((theme) => ({
 export default function Orders() {
   const [dados,setDados]= React.useState([]);
   const [filtro,setFiltro]= React.useState([]);
- const {state} = React.useContext(AuthContext)
- 
+ const {user} = React.useContext(AuthContext) 
  
 
  React.useEffect(() => {  
  
     async function loadData() {
-      const response = await api.get(`/entrada/${state.id}`);
+      const response = await api.get(`/entrada/${carregaUser()[0]}`);
       if (response.status === 200) {
         setDados(response.data);       
       }
     }
-    loadData();
+    loadData();  
   }, []);
 
   React.useEffect(() => {

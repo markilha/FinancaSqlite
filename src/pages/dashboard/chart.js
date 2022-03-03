@@ -4,22 +4,23 @@ import { LineChart, Line, XAxis, YAxis, Label, ResponsiveContainer,Tooltip,Carte
 import Title from './Title';
 import api from '../../services/api';
 import { AuthContext } from '../../contexts/auth';
+import{carregaUser} from '../../util/data.ts'
 
 
 export default function Chart() {
   const theme = useTheme(); 
   const [despesas,setDespesas] = React.useState([]);
   const [receitas,setReceitas] = React.useState([]);
-  const {state} = useContext(AuthContext);
+  const {user} = useContext(AuthContext);
  
   React.useEffect(()=>{
     async function loadDes(){
-      const response = await api.get(`/entrada/sumdes/${state.id}`);
+      const response = await api.get(`/entrada/sumdes/${carregaUser(user)[0]}`);
      setDespesas(response.data);
     }
     loadDes();
     async function loadRec(){
-      const response = await api.get(`/entrada/sumrec/${state.id}`);
+      const response = await api.get(`/entrada/sumrec/${carregaUser(user)[0]}`);
      setReceitas(response.data);
     }
     loadRec();

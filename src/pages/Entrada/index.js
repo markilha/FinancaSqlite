@@ -11,7 +11,7 @@ import { Tabela } from "../../components/tabela";
 import { AuthContext } from "../../contexts/auth";
 import { InfoArea } from "../../components/infoArea";
 import Popup from "../../components/entrada/Popup";
-import { getCurrentMonth, filtroPorMes } from "../../util/data.ts";
+import { getCurrentMonth, filtroPorMes,carregaUser } from "../../util/data.ts";
 import Notification from "../../components/entrada/Notification";
 import ModalAdd from "../../components/modal/modalAdd";
 import ModalCategoria from "../../components/modal/modalCategoria";
@@ -64,13 +64,12 @@ export default function Entrada() {
   });
 
 
-
+  
  
-  useEffect(() => {
-    console.log(user)  
+  useEffect(() => {    
 
     async function loadData() {
-      const response = await api.get(`/entrada/${user[0].id}}`);
+      const response = await api.get(`/entrada/${carregaUser(user)[0]}}`);
       if (response.status === 200) {
         setDados(response.data);
         setFiltro(response.data);

@@ -1,45 +1,44 @@
-import {useState,useEffect,createContext} from "react";
+import { useState, useEffect, createContext } from "react";
 import api from "../services/api";
 
 
 export const AuthContext = createContext({});
 
 function AuthProvider({ children }) {
-  const [atual, setAtual] = useState(true);  
+  const [atual, setAtual] = useState(true);
   const [loadingAuth, setLoadingAuth] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [mensagem, setMensagem]= useState('') 
- const user =[];
-
-
-  const loadStorage = () =>{    
-    const storage = localStorage.getItem("SistemaUser");
-    return JSON.parse(storage); 
-  }
+  const [mensagem, setMensagem] = useState('')
+  const [user, setUser] = useState(null); 
 
 
   function storageUser(data) {
     localStorage.setItem("SistemaUser", JSON.stringify(data));
   }
 
-  useEffect(() => {
-    user.push(loadStorage());
-    setLoading(true);  
+  useEffect(() => {   
+    loadStorage(); 
   }, []);
 
+  const loadStorage = () => {
+    const storage = localStorage.getItem("SistemaUser");
+    return  setUser(JSON.parse(storage));    
+ 
+  }
+
   //Fazendo login do usuario
-  async function signIn(email, senha) {   
+  async function signIn(email, senha) {
     try {
       setLoadingAuth(true);
       const response = await api.get(`/usuario/${email}`);
-      
-      if (senha === response.data.senha) {      
+
+      if (senha === response.data.senha) {
         storageUser(response.data);
-        loadStorage(); 
+        //loadStorage();
         setLoadingAuth(false);
         setMensagem('Logado com sucesso!!!')
 
-      }else{
+      } else {
         setMensagem('USUÁRIO ou SENHA não correspondem!!!!');
       }
     } catch (err) {
@@ -47,20 +46,20 @@ function AuthProvider({ children }) {
     }
   }
 
-  async function signOut(){   
-    localStorage.removeItem('SistemaUser');   
+  async function signOut() {
+    localStorage.removeItem('SistemaUser');
   }
 
   return (
     <AuthContext.Provider value={{
-       atual,
-       user,
-       signed : !!user,
-       setAtual,      
-        signIn,
-        signOut,
-        mensagem
-        }}>
+      atual,
+      user,
+      signed: !!user,
+      setAtual,
+      signIn,
+      signOut,
+      mensagem
+    }}>
       {children}
     </AuthContext.Provider>
   );
