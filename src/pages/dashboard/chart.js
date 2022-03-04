@@ -15,12 +15,12 @@ export default function Chart() {
  
   React.useEffect(()=>{
     async function loadDes(){
-      const response = await api.get(`/entrada/sumdes/${carregaUser(user)[0]}`);
+      const response = await api.get(`/entrada/sumdes/1`);
      setDespesas(response.data);
     }
     loadDes();
     async function loadRec(){
-      const response = await api.get(`/entrada/sumrec/${carregaUser(user)[0]}`);
+      const response = await api.get(`/entrada/sumrec/1`);
      setReceitas(response.data);
     }
     loadRec();

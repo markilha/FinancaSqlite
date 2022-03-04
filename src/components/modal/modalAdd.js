@@ -155,8 +155,7 @@ export default function ModalAdd(props) {
       <C.InputLabel>
         <C.InputTitle>Estatus</C.InputTitle>
         <C.Select value={estatus} onChange={(e) => setEstatus(e.target.value)}>
-          <>      
-         
+          <> 
            <option>Selecione</option>   
             <option key={"Pago"} value={"Pago"}>
               Pago

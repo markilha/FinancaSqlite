@@ -32,7 +32,7 @@ export default function Orders() {
  React.useEffect(() => {  
  
     async function loadData() {
-      const response = await api.get(`/entrada/${carregaUser()[0]}`);
+      const response = await api.get(`/entrada/1`);
       if (response.status === 200) {
         setDados(response.data);       
       }

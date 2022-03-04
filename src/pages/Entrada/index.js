@@ -62,20 +62,17 @@ export default function Entrada() {
     message: "",
     type: "",
   });
-
-
-  
  
   useEffect(() => {    
 
     async function loadData() {
-      const response = await api.get(`/entrada/${carregaUser(user)[0]}}`);
+      const response = await api.get(`/entrada/1`);
       if (response.status === 200) {
         setDados(response.data);
         setFiltro(response.data);
       }
     }
-    loadData();
+    loadData();   
   }, [atual]);
 
   useEffect(() => {
@@ -149,7 +146,7 @@ export default function Entrada() {
             estatus: valores.estatus,
             valor: parseFloat(valores.valor.toString().replace(",", ".")),
             mes: valores.mes,
-            usuario: user[0].id,
+            usuario: 1,
           };
 
           const response = await api.post("/entrada", dados);
@@ -164,7 +161,7 @@ export default function Entrada() {
           estatus: valores.estatus,
           valor: parseFloat(valores.valor.toString().replace(",", ".")),
           mes: valores.mes,
-          usuario: user[0].id,
+          usuario: 1,
         };
 
         const response = await api.post("/entrada", dado);
@@ -223,12 +220,14 @@ export default function Entrada() {
                 <Notification notify={notify} setNotify={setNotify} />
               </div>
             </C.Section>
-          </Grid>
-          <Box pt={4}>
-            <Copyright />
-          </Box>
+          </Grid>         
         </Container>
+        {/* <Box pt={4}>
+            <Copyright />
+          </Box> */}
+       
       </main>
+      
     </div>
   );
 }
