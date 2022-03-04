@@ -2,12 +2,11 @@ import * as C from "./styles";
 import { useState, useContext, Fragment } from "react";
 import { FiDelete, FiEdit2 } from "react-icons/fi";
 import api from "../../services/api";
-import Popup from "../../components/entrada/Popup";
-import Notification from "../../components/entrada/Notification";
-import ConfirmDialog from "../../components/entrada/ConfirmDialog";
-import ModelEntrada from "../../components/modal/modalEntrada";
-import { formatDate } from "../../util/data.ts";
-import { Estatus } from "../../components/estatus";
+import Popup from "../entrada/Popup";
+import Notification from "../entrada/Notification";
+import ConfirmDialog from "../entrada/ConfirmDialog";
+import ModelEntrada from "../modal/modalEntrada";
+import { Estatus } from "../estatus";
 import { AuthContext } from "../../contexts/auth";
 
 import Table from "@material-ui/core/Table";
@@ -15,12 +14,24 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import { makeStyles } from "@material-ui/core/styles";
 import Title from "./Title";
+
+
+
+const useStyles = makeStyles((theme) => ({
+  seeMore: {
+    marginTop: theme.spacing(3),
+  },
+}));
 
 export const Tabela = ({ lista }) => {
   const { atual, setAtual } = useContext(AuthContext);
   const [openPopup, setOpenPopup] = useState(false);
   const [recordForEdit, setRecordForEdit] = useState(null);
+  const classes = useStyles();
+
+
 
   const [notify, setNotify] = useState({
     isOpen: false,
@@ -100,8 +111,8 @@ export const Tabela = ({ lista }) => {
   };
 
   return (
-    <Fragment>
-      <C.Table>
+    <Fragment>     
+     
       <Title>Entradas recentes </Title>
       <Table size="small">
         <TableHead>
@@ -122,7 +133,7 @@ export const Tabela = ({ lista }) => {
               <TableCell>{row.tipo}</TableCell>
               <TableCell>{row.descricao}</TableCell>
               <TableCell> <Estatus estatus={row.estatus}/></TableCell>
-              <TableCell align="right"  style={{ color: row.tipo === "Despesa" ? "red" : "blue" }}>{row.valor}</TableCell>
+              <TableCell align="right"  style={{ color: row.tipo === "Despesa" ? "red" : "blue" }}>{row.valor.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</TableCell>
               <TableCell>
                  {/* BOTÃO ATUALIZAR */}
         
@@ -173,7 +184,8 @@ export const Tabela = ({ lista }) => {
         confirmDialog={confirmDialog}
         setConfirmDialog={setConfirmDialog}
       />
-      </C.Table>
+     
+   
     </Fragment>
   );
 };

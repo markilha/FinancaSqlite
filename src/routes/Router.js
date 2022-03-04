@@ -11,8 +11,10 @@ export default function RouteWrapper({
 }){  
 
  const{user, loading} = React.useContext(AuthContext); 
+ 
 
- const signed = true;
+ const signed = !!user;
+
   if(loading){
     return(
       <div></div>
@@ -27,7 +29,7 @@ export default function RouteWrapper({
     return <Redirect to="/dashboard" />
   }
 
-
+  
   return(
     <Route
       {...rest}

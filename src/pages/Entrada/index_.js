@@ -1,39 +1,29 @@
-import React, { useContext,useState,useEffect } from "react";
-import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
-import Box from "@material-ui/core/Box";
-import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import { InfoArea } from "../../components/infoArea";
-
-import Copyright from "../../components/Copyright";
 import AppBar from "../../components/AppBar";
-import { AuthContext } from "../../contexts/auth";
-import { getCurrentMonth, filtroPorMes,carregaUser } from "../../util/data.ts";
+import { useEffect, useState, useContext } from "react";
+import * as C from "./styles";
 import api from "../../services/api";
 import { Tabela } from "../../components/tabela";
+import { AuthContext } from "../../contexts/auth";
+import { InfoArea } from "../../components/infoArea";
+
+import { getCurrentMonth, filtroPorMes,carregaUser } from "../../util/data.ts";
 import Popup from "../../components/entrada/Popup";
 import Notification from "../../components/entrada/Notification";
 import ModalAdd from "../../components/modal/modalAdd";
 import ModalCategoria from "../../components/modal/modalCategoria";
 
-
-
-
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
   },
-
- 
- uttonHidden: {
+  uttonHidden: {
     display: "none",
   },
   title: {
     flexGrow: 1,
   },
- 
   appBarSpacer: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
@@ -51,43 +41,36 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
   },
   fixedHeight: {
-    height: 600,
+    height: 240,
   },
 }));
 
 export default function Entrada() {
-  const classes = useStyles(); 
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-  
-
-  const { atual, setAtual} = useContext(AuthContext); 
+  const classes = useStyles();
+  const { atual, setAtual,user } = useContext(AuthContext); 
   const [dados, setDados] = useState([]);
   const [filtro, setFiltro] = useState([]);
   const [mesAtual, setMesAtual] = useState(getCurrentMonth());
   const [renda, setRenda] = useState(0);
   const [despesa, setDespesa] = useState(0);
   const [openPopup, setOpenPopup] = useState(false);
-  const [openPoupCat, setOpenPoupCat] = useState(false);  
+  const [openPoupCat, setOpenPoupCat] = useState(false);
   const [notify, setNotify] = useState({
     isOpen: false,
     message: "",
     type: "",
   });
-
-
-  useEffect(() => { 
-    const storage = localStorage.getItem("SistemaUser");
-    const usu = JSON.parse(storage);
+ 
+  useEffect(() => {    
 
     async function loadData() {
-      const response = await api.get(`/entrada/${usu.id}`);
+      const response = await api.get(`/entrada/1`);
       if (response.status === 200) {
         setDados(response.data);
         setFiltro(response.data);
       }
     }
-    loadData();  
-   
+    loadData();   
   }, [atual]);
 
   useEffect(() => {
@@ -192,39 +175,30 @@ export default function Entrada() {
       setOpenPopup(false);
     }
   }
-  
 
   return (
     <div className={classes.root}>
       <AppBar title="Entradas" />
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
-        <Container maxWidth="lg" className={classes.container}>
+       
           <Grid container spacing={3}>
-
-            {/* tabela */}
-            <Grid item xs={12} md={8} lg={9}>
-             
-              <InfoArea
+            <C.Section>
+              <div className="grid">
+               <C.Body>
+                  <InfoArea
                     currentMonth={mesAtual}
                     onMonthChange={handleMonthChange}
                     income={renda}
                     expense={despesa}
                     onOpenEnt={onOpenEnt}
                     onOpenCat={onOpenCat}
-                  />              
-             
-              <Paper className={fixedHeightPaper}>
-              <Tabela lista={filtro} />                        
-              </Paper>
-            </Grid>
-          </Grid>
-          <Box pt={4}>
-            <Copyright />
-          </Box>
+                  />
+                  <Tabela lista={filtro} />
+                </C.Body>
 
-            {/* Inicio do Popup */}
-            <Popup
+                {/* Inicio do Popup */}
+                <Popup
                   title="Nova Entrada"
                   openPopup={openPopup}
                   setOpenPopup={setOpenPopup}
@@ -242,8 +216,12 @@ export default function Entrada() {
                 </Popup>
 
                 <Notification notify={notify} setNotify={setNotify} />
-        </Container>
+              </div>
+            </C.Section>
+          </Grid>
+       
       </main>
+      
     </div>
   );
 }

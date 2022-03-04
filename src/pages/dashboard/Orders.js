@@ -25,14 +25,14 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Orders() {
   const [dados,setDados]= React.useState([]);
-  const [filtro,setFiltro]= React.useState([]);
- const {user} = React.useContext(AuthContext) 
- 
+  const [filtro,setFiltro]= React.useState([]); 
 
- React.useEffect(() => {  
+ React.useEffect(() => { 
+  const storage = localStorage.getItem("SistemaUser");
+  const usu = JSON.parse(storage); 
  
     async function loadData() {
-      const response = await api.get(`/entrada/1`);
+      const response = await api.get(`/entrada/${usu.id}`);
       if (response.status === 200) {
         setDados(response.data);       
       }
@@ -66,7 +66,7 @@ export default function Orders() {
               <TableCell>{row.tipo}</TableCell>
               <TableCell>{row.descricao}</TableCell>
               <TableCell  style={{ color: row.estatus === "Pendente" ? "purple" : "green" }}>{row.estatus}</TableCell>
-              <TableCell align="right"  style={{ color: row.tipo === "Despesa" ? "red" : "blue" }}>{row.valor}</TableCell>
+              <TableCell align="right"  style={{ color: row.tipo === "Despesa" ? "red" : "blue" }}>{row.valor.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</TableCell>
             </TableRow>
           ))}
         </TableBody>

@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext } from "react";
+import { useState, useEffect, createContext,useCallback } from "react";
 import api from "../services/api";
 
 
@@ -9,7 +9,7 @@ function AuthProvider({ children }) {
   const [loadingAuth, setLoadingAuth] = useState(false);
   const [loading, setLoading] = useState(true);
   const [mensagem, setMensagem] = useState('')
-  const [user, setUser] = useState(null); 
+  const [user, setUser] = useState([]); 
 
 
   function storageUser(data) {
@@ -20,10 +20,10 @@ function AuthProvider({ children }) {
     loadStorage(); 
   }, []);
 
+
   const loadStorage = () => {
     const storage = localStorage.getItem("SistemaUser");
-    return  setUser(JSON.parse(storage));    
- 
+    return   setUser(JSON.parse(storage)); 
   }
 
   //Fazendo login do usuario

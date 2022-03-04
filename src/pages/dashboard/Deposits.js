@@ -22,8 +22,11 @@ export default function Deposits() {
   const{user} = React.useContext(AuthContext);
 
   React.useEffect(() => {
+    const storage = localStorage.getItem("SistemaUser");
+    const usu = JSON.parse(storage);
+
     async function loadData() {
-      const response = await api.get(`/entrada/1`);
+      const response = await api.get(`/entrada/${usu.id}`);
       if (response.status === 200) {
         setDados(response.data);
         setSaldo(balanco(response.data, getCurrentMonth()));

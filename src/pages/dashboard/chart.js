@@ -14,13 +14,16 @@ export default function Chart() {
   const {user} = useContext(AuthContext);
  
   React.useEffect(()=>{
+    const storage = localStorage.getItem("SistemaUser");
+    const usu = JSON.parse(storage);
+
     async function loadDes(){
-      const response = await api.get(`/entrada/sumdes/1`);
+      const response = await api.get(`/entrada/sumdes/${usu.id}`);
      setDespesas(response.data);
     }
     loadDes();
     async function loadRec(){
-      const response = await api.get(`/entrada/sumrec/1`);
+      const response = await api.get(`/entrada/sumrec/${usu.id}`);
      setReceitas(response.data);
     }
     loadRec();
