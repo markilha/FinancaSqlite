@@ -14,16 +14,18 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import TableContainer from '@material-ui/core/TableContainer';
 import { makeStyles } from "@material-ui/core/styles";
-import Title from "./Title";
+import Paper from '@material-ui/core/Paper';
+import {formatDate} from '../../util/data.ts'
 
 
 
-const useStyles = makeStyles((theme) => ({
-  seeMore: {
-    marginTop: theme.spacing(3),
+const useStyles = makeStyles({
+  table: {
+    minWidth: 650,
   },
-}));
+});
 
 export const Tabela = ({ lista }) => {
   const { atual, setAtual } = useContext(AuthContext);
@@ -113,8 +115,8 @@ export const Tabela = ({ lista }) => {
   return (
     <Fragment>     
      
-      <Title>Entradas recentes </Title>
-      <Table size="small">
+     <TableContainer component={Paper}>
+      <Table className={classes.table} size="small" aria-label="a dense table">
         <TableHead>
           <TableRow>
             <TableCell>Data</TableCell>
@@ -123,13 +125,13 @@ export const Tabela = ({ lista }) => {
             <TableCell>Estatus</TableCell>
             <TableCell align="right">valor</TableCell>
             <TableCell>Ação</TableCell>
-
           </TableRow>
-        </TableHead>
+          </TableHead>
+
         <TableBody>
           {lista.map((row) => (
             <TableRow key={row.id}>
-              <TableCell>{row.data}</TableCell>
+              <TableCell>{formatDate(row.data)}</TableCell>
               <TableCell>{row.tipo}</TableCell>
               <TableCell>{row.descricao}</TableCell>
               <TableCell> <Estatus estatus={row.estatus}/></TableCell>
@@ -169,8 +171,9 @@ export const Tabela = ({ lista }) => {
                 </TableCell>
             </TableRow>
           ))}
-        </TableBody>
+         </TableBody>
       </Table>
+    </TableContainer>
       <Popup
         title="Edição da Entrada"
         openPopup={openPopup}

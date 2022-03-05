@@ -43,23 +43,6 @@ export const balanco = (list,date) => {
 
   };
 
-// export const Balance = (list, date) => {
-//   let rendaCont = 0;
-//   let despesaCont = 0;
-//   let [year, month] = date.split("-");
-//   for (let i in list) {
-//     let [ano, mes] = list[i].data.toString().split("-");
-//     if (parseInt(ano) === parseInt(year) && parseInt(mes) === parseInt(month)) {
-//       if (list[i].tipo === "Despesa") {
-//         despesaCont += list[i].valor;
-//       } else {
-//         rendaCont += list[i].valor;
-//       }
-//     }
-//   }
-//   return (rendaCont - despesaCont)
-// };
-
 export const formatDate = (date) => {
   let [ano, mes, dia] = date.toString().split("-");
 

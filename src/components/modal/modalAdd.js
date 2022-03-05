@@ -44,8 +44,10 @@ export default function ModalAdd(props) {
     loadCategorias();
   }, []);
 
-  function handleChangeCategoria(item) {
+  async function handleChangeCategoria(item) {
     setCategoria(item);
+    const response = await api.get(`/categoria/tipo/${item}`)
+    setTipo(response.data.tipo);
   }
   function handleEntrada() {
     const dados = {

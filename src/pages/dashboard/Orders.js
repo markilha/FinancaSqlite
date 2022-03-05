@@ -8,8 +8,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Title from './Title';
 import api from "../../services/api";
-import { getCurrentMonth, filtroPorMes,carregaUser } from "../../util/data.ts";
-import {AuthContext} from '../../contexts/auth';
+import { getCurrentMonth, filtroPorMes} from "../../util/data.ts";
+
 
 
 
