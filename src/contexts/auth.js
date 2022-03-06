@@ -48,6 +48,7 @@ function AuthProvider({ children }) {
 
   async function signOut() {
     localStorage.removeItem('SistemaUser');
+    window.location.reload();
   }
 
   return (

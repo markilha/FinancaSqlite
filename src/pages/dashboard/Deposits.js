@@ -1,25 +1,47 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import Title from "./Title";
-import { getCurrentMonth, balanco,formatCurrentMonth,carregaUser } from "../../util/data.ts";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import Button from "@material-ui/core/Button";
+import {
+  getCurrentMonth,
+  balanco,
+  formatCurrentMonth,
+} from "../../util/data.ts";
 import api from "../../services/api";
-import { ResumoItem } from "../../components/resumoItem";
-import {AuthContext} from '../../contexts/auth';
-
+import {Total} from '../../components/Dashboard/Total';
 
 
 const useStyles = makeStyles({
-  depositContext: {
-    flex: 1,
+  root: {
+    minWidth: 200,
+  },
+  bullet: {
+    display: "inline-block",
+    margin: "0 2px",
+    transform: "scale(0.8)",
+  },
+  title: {
+    fontSize: 14,
+    color: 'blue'
+  },
+  mes:{
+    fontSize: 12,
+    color: 'green'
+  },
+  pos: {
+    marginBottom: 12,
   },
 });
 
 export default function Deposits() {
   const classes = useStyles();
-  const [dados, setDados] = React.useState();
-  const [saldo, setSaldo] = React.useState(0);
-  const{user} = React.useContext(AuthContext);
+  const [saldo, setSaldo] = React.useState({
+    despesa: 0,
+    receita: 0,
+    saldo: 0,
+  });
 
   React.useEffect(() => {
     const storage = localStorage.getItem("SistemaUser");
@@ -28,26 +50,75 @@ export default function Deposits() {
     async function loadData() {
       const response = await api.get(`/entrada/${usu.id}`);
       if (response.status === 200) {
-        setDados(response.data);
         setSaldo(balanco(response.data, getCurrentMonth()));
+        console.log(saldo.despesa);
       }
     }
     loadData();
   }, []);
 
   return (
-    <React.Fragment>
-      <Title>Balanço</Title>
-      <Typography component="span" variant="h4">
-        <ResumoItem
-          value={`R$ ${saldo.toLocaleString("pt-br")}`}
-          color={saldo < 0 ? "red" : "green"}
-        />
-      </Typography>
-      <Typography color="textSecondary" className={classes.depositContext}>
-      {formatCurrentMonth(getCurrentMonth())}
-      </Typography>
-      
+    <React.Fragment>    
+
+      {/* <Card className={classes.root} variant="outlined">
+        <CardContent>
+          <Typography
+            className={classes.title}
+            color="textSecondary"
+            gutterBottom
+          >
+            Receita:
+          </Typography>
+          <Typography variant="h9" component="h9">
+            {saldo.receita.toLocaleString("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            })}
+          </Typography>
+          <Typography
+            className={classes.title}
+            color="textSecondary"
+            gutterBottom
+          >
+            Despesa:
+          </Typography>
+          <Typography
+           variant="h9"
+            component="h9"
+            >
+            {saldo.despesa.toLocaleString("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            })}
+          </Typography>
+          <Typography
+            className={classes.title}
+            color="textSecondary"
+            gutterBottom
+          >
+            Balanço:
+          </Typography>
+
+          <Typography
+            variant="h9"
+            component="h9"
+            style={{color:saldo.saldo < 0 ? "red" : "green"}}>          
+            {saldo.saldo.toLocaleString("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            })}
+          </Typography>
+
+          <Typography
+            className={classes.mes}            
+            gutterBottom
+          >
+            <Button size="small">             
+              {formatCurrentMonth(getCurrentMonth())}
+            </Button>
+          </Typography>
+        </CardContent>
+      </Card> */}
     </React.Fragment>
   );
 }

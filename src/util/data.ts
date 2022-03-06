@@ -39,7 +39,13 @@ export const balanco = (list,date) => {
       }
     }
   }
-  return (rendaCont - despesaCont)
+  let result = rendaCont - despesaCont;
+
+  return ({
+    receita: rendaCont,
+    despesa: despesaCont,
+    saldo: result
+  })
 
   };
 

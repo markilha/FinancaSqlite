@@ -9,48 +9,41 @@ import {
   ResponsiveContainer,
   Tooltip,
   CartesianGrid,
+  Legend
 } from "recharts";
 import Title from "./Title";
 import api from "../../services/api";
 
 export default function Chart() {
   const theme = useTheme();
-  const [despesas, setDespesas] = React.useState([]);
+  const [results, setResults] = React.useState([]);
+  
   
 
-
-  const dados = async (list) => {
+  const dados = async () => {
     const storage = localStorage.getItem("SistemaUser");
     const usu = JSON.parse(storage);
-    const response = await api.get(`/entrada/sumrec/${usu.id}`);
+    const desp = await api.get(`/entrada/sumdes/${usu.id}`);
+    const rece = await api.get(`/entrada/sumrec/${usu.id}`); 
     let newList = [];
-    for (let i in list) {
-      for (let c in response.data) {
-        if (response.data[c].mes == list[i].mes) {
+    for (let i in desp.data) {
+      for (let c in rece.data) {
+        if (rece.data[c].mes == desp.data[i].mes) {
           newList.push({
-            mes: list[i].mes,
-            despesa: list[i].soma,
-            receita:response.data[c].soma
-          });
+            mes: desp.data[i].mes,
+            despesa: desp.data[i].soma,
+            receita:rece.data[c].soma
+          });      
+      
         }
       }
     }
-
-    return newList;
+    setResults(newList);
+        return newList;
   };
 
   React.useEffect(() => {
-    const storage = localStorage.getItem("SistemaUser");
-    const usu = JSON.parse(storage);
-
-    async function loadDes() {
-      const response = await api.get(`/entrada/sumdes/${usu.id}`);
-      setDespesas(response.data);         
-    }
-    loadDes();  
-   console.log(dados(despesas));  
-
-   
+   dados();
   }, []);
 
   return (
@@ -58,7 +51,7 @@ export default function Chart() {
       <Title>Projeção</Title>
       <ResponsiveContainer>
         <LineChart
-          data={despesas}
+          data={results}
           margin={{
             top: 16,
             right: 16,
@@ -67,6 +60,7 @@ export default function Chart() {
           }}
         >
           <XAxis dataKey="mes" stroke={theme.palette.text.secondary} />
+          <Legend/>
           <Tooltip />
           <CartesianGrid strokeDasharray="3 3" />
           <YAxis stroke={theme.palette.text.secondary}>
@@ -74,19 +68,18 @@ export default function Chart() {
               angle={270}
               position="left"
               style={{ textAnchor: "middle", fill: theme.palette.text.primary }}
-            >
-              Despesa
+            >             
             </Label>
           </YAxis>
           <Line
             type="monotone"
-            dataKey="soma"
+            dataKey="despesa"
             stroke={theme.palette.secondary.main}
             dot={true}
           />
           <Line
-            type="natural"
-            dataKey= "soma"
+            type="monotone"
+            dataKey= "receita"
             stroke={theme.palette.primary.main}
             dot={true}
           />

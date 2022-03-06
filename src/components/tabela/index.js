@@ -122,7 +122,7 @@ export const Tabela = ({ lista }) => {
             <TableCell>Data</TableCell>
             <TableCell>Tipo</TableCell>
             <TableCell>Descrição</TableCell>
-            <TableCell>Estatus</TableCell>
+            <TableCell align="center">Estatus</TableCell>
             <TableCell align="right">valor</TableCell>
             <TableCell>Ação</TableCell>
           </TableRow>
@@ -134,7 +134,7 @@ export const Tabela = ({ lista }) => {
               <TableCell>{formatDate(row.data)}</TableCell>
               <TableCell>{row.tipo}</TableCell>
               <TableCell>{row.descricao}</TableCell>
-              <TableCell> <Estatus estatus={row.estatus}/></TableCell>
+              <TableCell align="center" > <Estatus estatus={row.estatus}/></TableCell>
               <TableCell align="right"  style={{ color: row.tipo === "Despesa" ? "red" : "blue" }}>{row.valor.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</TableCell>
               <TableCell>
                  {/* BOTÃO ATUALIZAR */}

@@ -6,27 +6,24 @@ import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Chart from "./chart";
-import Deposits from "./Deposits";
-import Orders from "./Orders";
 import Copyright from "../../components/Copyright";
 import AppBar from "../../components/AppBar";
-import { AuthContext } from "../../contexts/auth";
+import { Total } from "../../components/Dashboard/Total";
+import { getCurrentMonth, balanco,formatCurrentMonth } from "../../util/data.ts";
 
-
+import api from "../../services/api";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
   },
-
- 
- uttonHidden: {
+  uttonHidden: {
     display: "none",
   },
   title: {
     flexGrow: 1,
   },
- 
+
   appBarSpacer: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
@@ -50,37 +47,76 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Dashboard() {
   const classes = useStyles();
-  const{state} = useContext(AuthContext);
+  const [saldo, setSaldo] = React.useState({
+    despesa: 0,
+    receita: 0,
+    saldo: 0,
+  });
+
+  React.useEffect(() => {
+    const storage = localStorage.getItem("SistemaUser");
+    const usu = JSON.parse(storage);
+
+    async function loadData() {
+      const response = await api.get(`/entrada/${usu.id}`);
+      if (response.status === 200) {
+        setSaldo(balanco(response.data, getCurrentMonth()));
+        console.log(saldo.despesa);
+      }
+    }
+    loadData();
+  }, []);
 
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
   return (
     <div className={classes.root}>
-      <AppBar title="DASHBOARD" />
+  <AppBar title={`${formatCurrentMonth(getCurrentMonth())}`} />
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={3}>
+            {/* Receita */}
+            <Grid item xs={12} md={4} lg={4}>
+              <Total
+                total={saldo.receita.toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                })}
+                titulo={"RECEITA"}
+                cor={'green'}
+              />
+            </Grid>
+
+            {/* Despesa*/}
+            <Grid item xs={12} md={4} lg={4}>
+              <Total
+                total={saldo.despesa.toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                })}
+                titulo={"DESPESA"}
+                cor={'pink'}
+              />
+            </Grid>
+               {/* Balanco*/}
+               <Grid item xs={12} md={4} lg={4}>
+              <Total
+                total={saldo.saldo.toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                })}
+                titulo={"BALANÇO"}
+                cor={saldo.saldo < 0 ? "red" : "green"}
+              />
+            </Grid>
 
             {/* Chart */}
-            <Grid item xs={12} md={8} lg={9}>
+            <Grid item xs={12} md={12} lg={12}>
               <Paper className={fixedHeightPaper}>
                 <Chart />
               </Paper>
             </Grid>
-            {/* Recent Deposits */}
-            <Grid item xs={12} md={4} lg={3}>
-              <Paper className={fixedHeightPaper}>
-                <Deposits />
-              </Paper>
-            </Grid>
-            {/* Recent Orders */}
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                <Orders />
-              </Paper>
-            </Grid>
-
           </Grid>
           <Box pt={4}>
             <Copyright />

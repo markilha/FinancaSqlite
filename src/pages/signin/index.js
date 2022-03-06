@@ -49,7 +49,7 @@ export default function SignIn() {
   });
 
   const handleSubmit = (e)=>{
-      e.preventDefault();  
+     // e.preventDefault();  
      signIn(email,senha);
      setNotify({
       isOpen: true,
