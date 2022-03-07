@@ -2,6 +2,11 @@ import React from "react";
 import { useTheme } from "@material-ui/core/styles";
 import {
   LineChart,
+  Pie,
+  PieChart,
+  BarChart,
+  Bar,
+  LabelList,
   Line,
   XAxis,
   YAxis,
@@ -9,22 +14,20 @@ import {
   ResponsiveContainer,
   Tooltip,
   CartesianGrid,
-  Legend
+  Legend,
 } from "recharts";
 import Title from "./Title";
 import api from "../../services/api";
 
-export default function Chart() {
+export const ChartLine = () => {
   const theme = useTheme();
   const [results, setResults] = React.useState([]);
-  
-  
 
   const dados = async () => {
     const storage = localStorage.getItem("SistemaUser");
     const usu = JSON.parse(storage);
     const desp = await api.get(`/entrada/sumdes/${usu.id}`);
-    const rece = await api.get(`/entrada/sumrec/${usu.id}`); 
+    const rece = await api.get(`/entrada/sumrec/${usu.id}`);
     let newList = [];
     for (let i in desp.data) {
       for (let c in rece.data) {
@@ -32,18 +35,17 @@ export default function Chart() {
           newList.push({
             mes: desp.data[i].mes,
             despesa: desp.data[i].soma,
-            receita:rece.data[c].soma
-          });      
-      
+            receita: rece.data[c].soma,
+          });
         }
       }
     }
     setResults(newList);
-        return newList;
+    return newList;
   };
 
   React.useEffect(() => {
-   dados();
+    dados();
   }, []);
 
   return (
@@ -60,7 +62,7 @@ export default function Chart() {
           }}
         >
           <XAxis dataKey="mes" stroke={theme.palette.text.secondary} />
-          <Legend/>
+          <Legend />
           <Tooltip />
           <CartesianGrid strokeDasharray="3 3" />
           <YAxis stroke={theme.palette.text.secondary}>
@@ -68,8 +70,7 @@ export default function Chart() {
               angle={270}
               position="left"
               style={{ textAnchor: "middle", fill: theme.palette.text.primary }}
-            >             
-            </Label>
+            ></Label>
           </YAxis>
           <Line
             type="monotone"
@@ -79,7 +80,7 @@ export default function Chart() {
           />
           <Line
             type="monotone"
-            dataKey= "receita"
+            dataKey="receita"
             stroke={theme.palette.primary.main}
             dot={true}
           />
@@ -87,4 +88,73 @@ export default function Chart() {
       </ResponsiveContainer>
     </React.Fragment>
   );
-}
+};
+
+export const ChartPie = () => {
+  const [results, setResults] = React.useState([]);
+  const dados = async () => {
+    const storage = localStorage.getItem("SistemaUser");
+    const usu = JSON.parse(storage);
+    const categorias = await api.get(`/entrada/${usu.id}/concat`);
+    setResults(categorias.data);
+  };
+
+  React.useEffect(() => {
+    dados();
+  }, []);
+
+  return (
+    <React.Fragment>
+      <Title>Categoria</Title>
+      <ResponsiveContainer>
+        <PieChart width={900} height={900}>
+          <Tooltip />
+          <Pie
+            data={results}
+            dataKey="soma"
+            nameKey="categoria"
+            cx="50%"
+            cy="50%"
+            innerRadius={60}
+            outerRadius={80}
+            fill="#82ca9d"
+            label
+          />
+        </PieChart>
+      </ResponsiveContainer>
+    </React.Fragment>
+  );
+};
+
+export const ChartBar = (props) => {
+
+  return (
+    <React.Fragment>
+      <Title>Categoria</Title>
+      <ResponsiveContainer>
+        <BarChart
+          width={730}
+          height={250}
+          data={props.dados}
+          margin={{ top: 15, right: 30, left: 20, bottom: 5 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="categoria">
+            <Label
+              value=""
+              angle={0}             
+              offset={0}
+              position="insideBottom"
+            />
+          </XAxis>
+          <YAxis
+            label={{ value: "", angle: -90, position: "insideLeft" }}
+          />
+          <Bar dataKey="soma" fill="#8884d8">
+            <LabelList dataKey="soma" position="top" />
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    </React.Fragment>
+  );
+};

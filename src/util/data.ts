@@ -19,14 +19,14 @@ export const filtroPorMes = (list, date) => {
 
 export const carregaUser = (list) => {
   let newList = [];
-  for (let i in list) {  
-         newList.push(list[i]);
+  for (let i in list) {
+    newList.push(list[i]);
   }
   return newList;
 };
 
-export const balanco = (list,date) => { 
-      let rendaCont = 0;
+export const balanco = (list, date) => {
+  let rendaCont = 0;
   let despesaCont = 0;
   let [year, month] = date.split("-");
   for (let i in list) {
@@ -41,13 +41,49 @@ export const balanco = (list,date) => {
   }
   let result = rendaCont - despesaCont;
 
-  return ({
+  return {
     receita: rendaCont,
     despesa: despesaCont,
-    saldo: result
-  })
-
+    saldo: result,
   };
+};
+
+export const SomaStatus = (list, date) => {
+  let pending = 0;
+  let paidout = 0;
+  let [year, month] = date.split("-");
+  for (let i in list) {
+    let [ano, mes] = list[i].data.toString().split("-");
+    if (parseInt(ano) === parseInt(year) && parseInt(mes) === parseInt(month)) {
+
+      if (list[i].estatus == "Pendente" && list[i].tipo == "Despesa") {
+        pending += list[i].valor;
+      } else {
+        paidout += list[i].valor;
+      }
+    }
+  }
+  return {
+    pendente: pending,
+    pago: paidout   
+  };
+};
+
+export const SomaCategoria = (list, date) => { 
+  let [year, month] = date.split("-");
+  let newArray = [];
+
+  for (let i in list) {
+    let [ano, mes] = list[i].data.toString().split("-");
+    if (parseInt(ano) === parseInt(year) && parseInt(mes) === parseInt(month)) {
+      newArray.push({
+        categoria: list[i].categoria,
+        soma: list[i].soma,
+      })       
+    }
+  }
+  return newArray;
+};  
 
 export const formatDate = (date) => {
   let [ano, mes, dia] = date.toString().split("-");
