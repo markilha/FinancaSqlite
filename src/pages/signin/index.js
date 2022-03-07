@@ -14,9 +14,6 @@ import { AuthContext } from '../../contexts/auth';
 import Notification from '../../components/entrada/Notification'
 
 
-
-
-
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
@@ -38,19 +35,32 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignIn() {
-  const classes = useStyles();
+  const classes = useStyles(); 
   const {signIn,mensagem} = useContext(AuthContext);
   const[email, setEmail] = useState('');
   const[senha,setSenha]= useState('');
+  const[values,setValues]= useState(initialStates());
   const [notify, setNotify] = useState({
     isOpen: false,
     message: "",
     type: "",
   });
 
+  function initialStates(){
+    return {email:'',senha:''}
+  }
+
+  function onChange(event){
+    const{name,value}=event.target;
+    setValues({
+      ...values,
+      [name]:value
+    });
+  }
+
   const handleSubmit = (e)=>{
      // e.preventDefault();  
-     signIn(email,senha);
+     signIn(values.email,values.senha);
      setNotify({
       isOpen: true,
       message: mensagem,
@@ -79,21 +89,21 @@ export default function SignIn() {
             name="email"
             autoComplete="email"
             autoFocus
-            value={email}
-            onChange={(e)=> setEmail(e.target.value)}
+            value={values.email}
+            onChange={onChange}
           />
           <TextField
             variant="outlined"
             margin="normal"
             required
             fullWidth
-            name="password"
+            name="senha"
             label="Senha"
             type="password"
             id="password"
             autoComplete="current-password"
-            value={senha}
-            onChange={(e)=> setSenha(e.target.value)}
+            value={values.senha}
+            onChange={onChange}
           />
           {/* <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}

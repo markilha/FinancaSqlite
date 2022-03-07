@@ -1,10 +1,10 @@
-import { useState, useEffect, createContext,useCallback } from "react";
+import { useState, useEffect, createContext} from "react";
 import api from "../services/api";
-
 
 export const AuthContext = createContext({});
 
 function AuthProvider({ children }) {
+ 
   const [atual, setAtual] = useState(true);
   const [loadingAuth, setLoadingAuth] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -33,8 +33,7 @@ function AuthProvider({ children }) {
       const response = await api.get(`/usuario/${email}`);
 
       if (senha === response.data.senha) {
-        storageUser(response.data);
-        //loadStorage();
+        storageUser(response.data);        
         setLoadingAuth(false);
         setMensagem('Logado com sucesso!!!')
 
@@ -48,7 +47,8 @@ function AuthProvider({ children }) {
 
   async function signOut() {
     localStorage.removeItem('SistemaUser');
-    window.location.reload();
+   window.location.reload();
+  
   }
 
   return (
