@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function Popup(props) {
 
-    const { title, children, openPopup, setOpenPopup } = props;
+    const {title, children, openPopup, setOpenPopup } = props;
     const classes = useStyles();
 
     return (
@@ -26,7 +26,7 @@ export default function Popup(props) {
                     <Typography variant="h6" component="div" style={{ flexGrow: 1 }}>
                         {title}
                     </Typography>
-                    <Controls.ActionButton
+                    <Controls.ActionButton                     
                         color="secondary"
                         onClick={()=>{setOpenPopup(false)}}>
                         <CloseIcon />

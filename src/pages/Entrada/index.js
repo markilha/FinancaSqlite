@@ -68,6 +68,21 @@ export default function Entrada() {
     type: "",
   });
 
+
+   function initialValures() {
+    return {
+      id:0,
+      valor: 0,
+      data: '',
+      descricao: '',
+      categoria: '',
+      tipo: 'Despesa',
+      repetir: 0,
+      estatus: 'Pendente'
+    }
+
+  }
+
   useEffect(() => {
     const storage = localStorage.getItem("SistemaUser");
     const usu = JSON.parse(storage);
@@ -215,13 +230,13 @@ export default function Entrada() {
           </Box>
 
           {/* Inicio do Popup */}
-          <Popup
-            title="Nova Entrada"
-            openPopup={openPopup}
-            setOpenPopup={setOpenPopup}
-          >
-            <ModalAdd handleAddEvent={handleAddEvent} />
-          </Popup>
+        
+            <ModalAdd
+                 openPopup={openPopup}
+                 setOpenPopup={setOpenPopup}
+                 initialValures={initialValures()}
+             />
+         
 
           {/* Inicio do Popup CATEGORIA */}
           <Popup

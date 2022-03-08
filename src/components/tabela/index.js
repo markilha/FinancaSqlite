@@ -5,7 +5,7 @@ import api from "../../services/api";
 import Popup from "../entrada/Popup";
 import Notification from "../entrada/Notification";
 import ConfirmDialog from "../entrada/ConfirmDialog";
-import ModelEntrada from "../modal/modalEntrada";
+import ModalAdd from "../modal/modalAdd";
 import { Estatus } from "../estatus";
 import { AuthContext } from "../../contexts/auth";
 
@@ -17,7 +17,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TableContainer from '@material-ui/core/TableContainer';
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from '@material-ui/core/Paper';
-import {formatDate} from '../../util/data.ts'
+import { formatDate } from '../../util/data.ts'
 
 
 
@@ -30,7 +30,17 @@ const useStyles = makeStyles({
 export const Tabela = ({ lista }) => {
   const { atual, setAtual } = useContext(AuthContext);
   const [openPopup, setOpenPopup] = useState(false);
-  const [recordForEdit, setRecordForEdit] = useState(null);
+  const [recordForEdit, setRecordForEdit] = useState({       
+        id:0,
+        valor: 0,
+        data: '',
+        descricao: 'descrição',
+        categoria: '',
+        tipo: '',
+        repetir: '',
+        estatus: ''   
+
+  });
   const classes = useStyles();
 
 
@@ -89,8 +99,7 @@ export const Tabela = ({ lista }) => {
       estatus: item.estatus,
       valor: parseFloat(item.valor.toString().replace(",", ".")),
       usuario: 1,
-    };
-    console.log(dados);
+    };  
 
     async function updateEntrada() {
       try {
@@ -107,88 +116,103 @@ export const Tabela = ({ lista }) => {
     setOpenPopup(false);
   };
 
-  const openInPopup = (item) => {
-    setRecordForEdit(item);
+ function openInPopup (item) {
+
+    setRecordForEdit({
+      ...recordForEdit,      
+       item
+    });
+    console.log(item)
+    
     setOpenPopup(true);
+  
   };
 
   return (
-    <Fragment>     
-     
-     <TableContainer component={Paper}>
-      <Table className={classes.table} size="small" aria-label="a dense table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Data</TableCell>
-            <TableCell>Tipo</TableCell>
-            <TableCell>Descrição</TableCell>
-            <TableCell align="center">Estatus</TableCell>
-            <TableCell align="right">valor</TableCell>
-            <TableCell>Ação</TableCell>
-          </TableRow>
+    <Fragment>
+
+      <TableContainer component={Paper}>
+        <Table className={classes.table} size="small" aria-label="a dense table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Data</TableCell>
+              <TableCell>Tipo</TableCell>
+              <TableCell>Descrição</TableCell>
+              <TableCell align="center">Estatus</TableCell>
+              <TableCell align="right">valor</TableCell>
+              <TableCell>Ação</TableCell>
+            </TableRow>
           </TableHead>
 
-        <TableBody>
-          {lista.map((row) => (
-            <TableRow key={row.id}>
-              <TableCell>{formatDate(row.data)}</TableCell>
-              <TableCell>{row.tipo}</TableCell>
-              <TableCell>{row.descricao}</TableCell>
-              <TableCell align="center" > <Estatus estatus={row.estatus}/></TableCell>
-              <TableCell align="right"  style={{ color: row.tipo === "Despesa" ? "red" : "blue" }}>{row.valor.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}</TableCell>
-              <TableCell>
-                 {/* BOTÃO ATUALIZAR */}
-        
-                <C.Action>
-                  <button
-                    onClick={() => {
-                      openInPopup(row);
-                    }}
-                  >
-                    {" "}
-                    <FiEdit2 size={20} />
-                  </button>
-                </C.Action>
-                   {/* BOTÃO DELETAR*/}
-                   <C.Action>
-                  <button
-                    onClick={() => {
-                      setConfirmDialog({
-                        isOpen: true,
-                        title: "Deseja realmente deletar esta entrada?",
-                        subTitle: "Você pode voltar da operação",
-                        onConfirm: () => {
-                          onDelete(row.id);
-                        },
-                      });
-                    }}
-                  >
-                    {" "}
-                    <FiDelete size={20} />
-                  </button>
-                </C.Action>
-              
+          <TableBody>
+            {lista.map((row) => (
+              <TableRow key={row.id}>
+                <TableCell>{formatDate(row.data)}</TableCell>
+                <TableCell>{row.tipo}</TableCell>
+                <TableCell>{row.descricao}</TableCell>
+                <TableCell align="center" > <Estatus estatus={row.estatus} /></TableCell>
+                <TableCell align="right" style={{ color: row.tipo === "Despesa" ? "red" : "blue" }}>{row.valor.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}</TableCell>
+                <TableCell>
+                  {/* BOTÃO ATUALIZAR */}
+
+                  <C.Action>
+                    <button
+                      onClick={() => {
+                        openInPopup(row);
+                      }}
+                    >
+                      {" "}
+                      <FiEdit2 size={20} />
+                    </button>
+                  </C.Action>
+                  {/* BOTÃO DELETAR*/}
+                  <C.Action>
+                    <button
+                      onClick={() => {
+                        setConfirmDialog({
+                          isOpen: true,
+                          title: "Deseja realmente deletar esta entrada?",
+                          subTitle: "Você pode voltar da operação",
+                          onConfirm: () => {
+                            onDelete(row.id);
+                          },
+                        });
+                      }}
+                    >
+                      {" "}
+                      <FiDelete size={20} />
+                    </button>
+                  </C.Action>
+
                 </TableCell>
-            </TableRow>
-          ))}
-         </TableBody>
-      </Table>
-    </TableContainer>
-      <Popup
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+
+      {/* <Popup
         title="Edição da Entrada"
         openPopup={openPopup}
         setOpenPopup={setOpenPopup}
       >
         <ModelEntrada recordForEdit={recordForEdit} addOrEdit={addOrEdit} />
-      </Popup>
+      </Popup> */}
 
       <Notification notify={notify} setNotify={setNotify} />
       <ConfirmDialog
         confirmDialog={confirmDialog}
         setConfirmDialog={setConfirmDialog}
       />
-     
-   
+
+      <ModalAdd
+        openPopup={openPopup}
+        setOpenPopup={setOpenPopup}
+        initialValures={recordForEdit}
+      />
+
+
     </Fragment>
   );
 };

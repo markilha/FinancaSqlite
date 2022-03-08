@@ -97,6 +97,7 @@ export const ChartPie = () => {
     const usu = JSON.parse(storage);
     const categorias = await api.get(`/entrada/${usu.id}/concat`);
     setResults(categorias.data);
+   
   };
 
   React.useEffect(() => {

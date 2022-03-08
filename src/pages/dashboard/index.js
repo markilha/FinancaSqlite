@@ -77,7 +77,7 @@ export default function Dashboard() {
         setPending(SomaStatus(response.data, getCurrentMonth()));        
       }
       const resp = await api.get(`/entrada/${usu.id}/concat`); 
-      setCategorias(SomaCategoria(resp.data, getCurrentMonth()));
+      setCategorias(SomaCategoria(resp.data, getCurrentMonth()));     
     }
     loadData();  
   }, []);

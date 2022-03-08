@@ -78,7 +78,7 @@ export const SomaCategoria = (list, date) => {
     if (parseInt(ano) === parseInt(year) && parseInt(mes) === parseInt(month)) {
       newArray.push({
         categoria: list[i].categoria,
-        soma: list[i].soma,
+        soma: parseFloat(list[i].soma.toFixed(2)),
       })       
     }
   }

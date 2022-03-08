@@ -1,9 +1,11 @@
 import { useState, useEffect, createContext} from "react";
 import api from "../services/api";
+import useStorage from '../util/useStorage';
 
 export const AuthContext = createContext({});
 
 function AuthProvider({ children }) {
+  const [token,setToken] = useStorage('token');
  
   const [atual, setAtual] = useState(true);
   const [loadingAuth, setLoadingAuth] = useState(false);
@@ -59,7 +61,9 @@ function AuthProvider({ children }) {
       setAtual,
       signIn,
       signOut,
-      mensagem
+      mensagem,
+      token,
+      setToken
     }}>
       {children}
     </AuthContext.Provider>

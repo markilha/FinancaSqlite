@@ -12,6 +12,8 @@ import Container from '@material-ui/core/Container';
 import Copyright from '../../components/Copyright';
 import { AuthContext } from '../../contexts/auth';
 import Notification from '../../components/entrada/Notification'
+import {useHistory} from 'react-router-dom';
+import api from '../../services/api'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -36,7 +38,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignIn() {
   const classes = useStyles(); 
-  const {signIn,mensagem} = useContext(AuthContext);
+  const {signIn,mensagem,setToken} = useContext(AuthContext);
+  const history = useHistory();
   const[email, setEmail] = useState('');
   const[senha,setSenha]= useState('');
   const[values,setValues]= useState(initialStates());
@@ -45,6 +48,20 @@ export default function SignIn() {
     message: "",
     type: "",
   });
+  
+ async function login({email,senha}){
+    const response = await api.get(`/usuario/${email}`);  
+
+    if (senha === response.data.senha) {      
+      return {token:'123456'};
+    } else{
+      setNotify({
+        isOpen: true,
+        message: 'Usuário ou senha incorretos!!!',
+        type: "error",
+      });
+    }
+  }
 
   function initialStates(){
     return {email:'',senha:''}
@@ -59,7 +76,17 @@ export default function SignIn() {
   }
 
   const handleSubmit = (e)=>{
-     // e.preventDefault();  
+      // e.preventDefault();
+      
+      // const{token}=login(values)   
+
+      // if(token){        
+      //   setToken(token)
+      //  return history.push('/dashboard')
+      // }
+
+      // setValues(initialStates);
+
      signIn(values.email,values.senha);
      setNotify({
       isOpen: true,
