@@ -33,11 +33,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ModalAdd(props) {
   const {openPopup, setOpenPopup, initialValures} = props;
-  const classes = useStyles();
-  const { user } = useContext(AuthContext); 
+  const classes = useStyles(); 
+  const { atual, setAtual } = useContext(AuthContext);
   const [categorias, setCategorias] = useState([]);
-  const [values, setValues] = useState(initialValures);
-  
+  const [values, setValues] = useState([]);
 
 
 
@@ -56,6 +55,13 @@ export default function ModalAdd(props) {
     { id: 11 },
     { id: 12 },
   ];
+
+  useEffect(() => {
+    if (initialValures != null)
+      setValues({
+        ...initialValures,
+      });
+  }, [initialValures]);
 
 
   useEffect(() => {
@@ -81,28 +87,102 @@ export default function ModalAdd(props) {
   //   const response = await api.get(`/categoria/tipo/${item}`)
   //   setTipo(response.data.tipo);
   // }
-  function handleEntrada() {
+  async function handleEntrada() {
 
-    if(values.id === 0){
-      const dados = {
+    if(values.id == 0){
+
+      let errors = [];
+      let mensagem = "";
+      if (isNaN(new Date(values.data).getTime())) {
+        errors.push("Data inválida!");
+      }
+      if (values.descricao === "") {
+        errors.push("Descrição esta vazia!");
+      }
+      if (parseFloat(values.valor) <= 0) {
+        errors.push("Valor inválido!");
+      }
+      if (errors.length > 0) {
+        alert(errors.join("\n"));
+      } else {
+        if (values.repetir > 0) {
+          let [ano, mes, dia] = values.data.toString().split("-");
+  
+          for (var i = 0; i < values.repetir; i++) {
+            
+            var m = parseInt(mes) + i;
+            let newMes = "";
+  
+            if (m > 12) {
+              newMes = m - 12;
+              ano = parseInt(ano) + 1;
+            } else {
+              newMes = m;
+            }
+            newMes = ("00" + newMes).slice(-2);
+  
+            let newDada =`${ano}-${newMes}-${dia}`;
+  
+            var dados = {
+              data: `${ano}-${newMes}-${dia}`,
+              categoria: values.categoria,
+              descricao: `(${i+1} de ${values.repetir}) -${values.descricao}` ,
+              tipo: values.tipo,
+              estatus: values.estatus,
+              valor: parseFloat(values.valor.toString().replace(",", ".")),
+              mes: retornaMes(newDada),
+              usuario: 1,
+            };
+  
+            const response = await api.post("/entrada", dados);
+            mensagem = response.data;
+               
+          setAtual(!atual)    
+          setOpenPopup(false);
+  
+          }
+        } else {
+          var dado = {
+            id:values.id,
+            data: values.data,
+            categoria: values.categoria,
+            descricao: values.descricao,
+            tipo: values.tipo,
+            estatus: values.estatus,
+            valor: parseFloat(values.valor.toString().replace(",", ".")),
+            mes: values.mes,
+            usuario: 1,
+          };
+  
+          const response = await api.post("/entrada", dado);
+          mensagem = response.data;
+  
+          setAtual(!atual)    
+          setOpenPopup(false);
+          
+        } 
+      }
+    }else{
+
+      var items = {     
         data: values.data,
         categoria: values.categoria,
         descricao: values.descricao,
         tipo: values.tipo,
-        repetir: values.repetir,
         estatus: values.estatus,
         valor: parseFloat(values.valor.toString().replace(",", ".")),
-        mes: retornaMes(values.data),
-        usuario: user.id
+        mes: values.mes,
+        usuario: 1,
       };
-  
-      setValues(dados);
-     // handleAddEvent(dados);
-     alert('Ola mundo')
 
+      const response = await api.put(`/entrada/${values.id}`, items);     
+
+      setAtual(!atual)    
+      setOpenPopup(false);      
+      
     }
    
-
+ 
   }
 
   return (

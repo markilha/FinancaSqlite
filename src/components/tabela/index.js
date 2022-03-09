@@ -20,7 +20,6 @@ import Paper from '@material-ui/core/Paper';
 import { formatDate } from '../../util/data.ts'
 
 
-
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
@@ -30,17 +29,7 @@ const useStyles = makeStyles({
 export const Tabela = ({ lista }) => {
   const { atual, setAtual } = useContext(AuthContext);
   const [openPopup, setOpenPopup] = useState(false);
-  const [recordForEdit, setRecordForEdit] = useState({       
-        id:0,
-        valor: 0,
-        data: '',
-        descricao: 'descrição',
-        categoria: '',
-        tipo: '',
-        repetir: '',
-        estatus: ''   
-
-  });
+  const [recordForEdit, setRecordForEdit] = useState({});
   const classes = useStyles();
 
 
@@ -62,6 +51,7 @@ export const Tabela = ({ lista }) => {
       ...confirmDialog,
       isOpen: false,
     });
+    
     async function dellLote() {
       await api.delete(`/entrada/${id}`);
     }
@@ -119,10 +109,16 @@ export const Tabela = ({ lista }) => {
  function openInPopup (item) {
 
     setRecordForEdit({
-      ...recordForEdit,      
-       item
+      id:item.id,
+      valor: item.valor,
+      data: item.data,
+      descricao: item.descricao,
+      categoria: item.categoria,
+      tipo: item.tipo,
+      repetir: item.repetir,
+      estatus: item.estatus  
     });
-    console.log(item)
+    console.log(recordForEdit)
     
     setOpenPopup(true);
   

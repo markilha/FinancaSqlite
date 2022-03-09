@@ -125,83 +125,7 @@ export default function Entrada() {
 
   const onOpenCat = () => {
     setOpenPoupCat(!openPoupCat);
-  };
-
-  //ENSERIR E EDITAR
-  async function handleAddEvent(valores) {
-    console.log(valores);
-
-    let errors = [];
-    let mensagem = "";
-    if (isNaN(new Date(valores.data).getTime())) {
-      errors.push("Data inválida!");
-    }
-    if (valores.descricao === "") {
-      errors.push("Descrição esta vazia!");
-    }
-    if (parseFloat(valores.valor) <= 0) {
-      errors.push("Valor inválido!");
-    }
-    if (errors.length > 0) {
-      alert(errors.join("\n"));
-    } else {
-      if (valores.repetir > 0) {
-        let [ano, mes, dia] = valores.data.toString().split("-");
-
-        for (var i = 0; i < valores.repetir; i++) {
-          
-          var m = parseInt(mes) + i;
-          let newMes = "";
-
-          if (m > 12) {
-            newMes = m - 12;
-            ano = parseInt(ano) + 1;
-          } else {
-            newMes = m;
-          }
-          newMes = ("00" + newMes).slice(-2);
-
-          let newDada =`${ano}-${newMes}-${dia}`;
-
-          var dados = {
-            data: `${ano}-${newMes}-${dia}`,
-            categoria: valores.categoria,
-            descricao: `(${i+1} de ${valores.repetir}) -${valores.descricao}` ,
-            tipo: valores.tipo,
-            estatus: valores.estatus,
-            valor: parseFloat(valores.valor.toString().replace(",", ".")),
-            mes: retornaMes(newDada),
-            usuario: 1,
-          };
-
-          const response = await api.post("/entrada", dados);
-          mensagem = response.data;
-        }
-      } else {
-        var dado = {
-          data: valores.data,
-          categoria: valores.categoria,
-          descricao: valores.descricao,
-          tipo: valores.tipo,
-          estatus: valores.estatus,
-          valor: parseFloat(valores.valor.toString().replace(",", ".")),
-          mes: valores.mes,
-          usuario: 1,
-        };
-
-        const response = await api.post("/entrada", dado);
-        mensagem = response.data;
-      }
-
-      setNotify({
-        isOpen: true,
-        message: mensagem,
-        type: "success",
-      });
-      setAtual(!atual);
-      setOpenPopup(false);
-    }
-  }
+  }; 
 
   return (
     <div className={classes.root}>
@@ -234,7 +158,8 @@ export default function Entrada() {
             <ModalAdd
                  openPopup={openPopup}
                  setOpenPopup={setOpenPopup}
-                 initialValures={initialValures()}
+                 initialValures={initialValures()} 
+                                        
              />
          
 
@@ -242,7 +167,8 @@ export default function Entrada() {
           <Popup
             title="Nova Categoria"
             openPopup={openPoupCat}
-            setOpenPopup={setOpenPoupCat}
+            setOpenPopup={setOpenPoupCat}   
+            atual      
           >
             <ModalCategoria setOpenPoupCat={setOpenPoupCat} />
           </Popup>
